@@ -8,12 +8,10 @@ public class Hotel {
 	private static final Set<String> existingNames = new HashSet<>();	//hashSet to create unique hotel names
 	private String sHotelName;
 	private ArrayList<Room> hotelRooms = new ArrayList<>();
-//	private Room [] hotelRooms = new Room[50];
+	private ArrayList<Reservation> hotelReservations = new ArrayList<>();
 	private int nCountOfRooms = 0;
 	private int nCountOfReservations = 0;
-	
-	
-	
+
 
 	public Hotel(String sHotelName) {
 		setsHotelName(sHotelName);
@@ -32,7 +30,7 @@ public class Hotel {
 		if (!(this.nCountOfRooms < 50))
 			throw new IllegalArgumentException("Hotel name already exists");
 		else {
-			System.out.println("Creating Room...");
+			System.out.println("\nCreating Room...");
 			System.out.println("What floor is the room located in?");
 				int floor = sc.nextInt();
 			System.out.println("What room number will you be assigning the room?");
@@ -57,11 +55,17 @@ public class Hotel {
 		String name = "";
 		
 		do {
+			//TODO huhu why no work
+//			if (sHotelName.equals(null) || sHotelName.equals("\n")) {
+//				System.out.println("That is an invalid name. Please choose another name for the hotel.");
+//				name = sc.nextLine();
+//				checkIfValidName(name);
+//			} else 
 			if (existingNames.contains(sHotelName)) {
-			System.out.println("Please choose another name. There already exists a hotel with this name.");
-//			throw new IllegalArgumentException("Hotel name already exists");
-			name = sc.nextLine();
-			checkIfValidName(name);
+				System.out.println("Please choose another name. There already exists a hotel with this name.");
+//				throw new IllegalArgumentException("Hotel name already exists");
+				name = sc.nextLine();
+				checkIfValidName(name);
 			}
 			else
 				return sHotelName;
@@ -85,26 +89,35 @@ public class Hotel {
 	
 	public void UpdateBasePriceOfRooms(double newPrice) {
 		Scanner sc = new Scanner(System.in);
-		double num = 0;
-		
+		double num = newPrice;
+				
 		do {
-			if (!(newPrice >= 100)) {
+			if (!(num >= 100)) {
 				System.out.println("Please increase the new base price of rooms to at least 100PHP");
 				num = sc.nextDouble();
 				UpdateBasePriceOfRooms(num);
-			} else
-				System.out.println("here?");
-		} while (!(newPrice >= 100) || !(num >= 100));
+			}
+		} while (!(num >= 100));	//do all this while 1000 ! >= 100
 		
-		System.out.println("here?");
 		Room.dBasePricePerNight = newPrice;
-		System.out.println("success");
 	}
 	
 	//this needs more editing for more accurate estimation
 	//this could be interpreted kasi as max estimate as in all rooms booked all days of the month
 	//or summation of all reservations in all rooms on all 31 days
 	public double EstimatedEarningsPerMonth() {
-		return nCountOfRooms * this.hotelRooms.get(0).getdBasePricePerNight();
+		float estimatedEarningsThisMonth = 0.0f;
+		for (Room room : hotelRooms) {
+			estimatedEarningsThisMonth += room.getReservation().getdTotalPriceOfBooking();
+		}
+		return estimatedEarningsThisMonth;
+	}
+
+	public ArrayList<Room> getHotelRooms() {
+		return hotelRooms;
+	}
+
+	public ArrayList<Reservation> getHotelReservations() {
+		return hotelReservations;
 	}
 }

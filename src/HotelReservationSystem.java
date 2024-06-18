@@ -29,9 +29,6 @@ public class HotelReservationSystem {
 		System.out.println("Returning to Main Menu. Press Enter to Continue...");
 		sc.nextLine();
 		cls();
-		
-//		System.out.println(newHotel1.hotelRooms.get(0).sRoomName);
-//		System.out.println(newHotel1.hotelRooms.get(1).sRoomName);
 	}
 	
 	public static Hotel WhichHotelToViewManage() {
@@ -135,7 +132,6 @@ public class HotelReservationSystem {
 		Scanner sc = new Scanner(System.in);
 		
 		System.out.println("You have chosen to add rooms to: " + chosenHotel.getsHotelName() + "!");
-		
 		chosenHotel.createRoom();
 		
 		System.out.println("Returning to Main Menu. Press Enter to Continue...");
@@ -144,7 +140,40 @@ public class HotelReservationSystem {
 	}
 	
 	public static void RemoveRooms(Hotel chosenHotel) {
+		Scanner sc = new Scanner(System.in);
 		
+		//TODO multiple rooms?
+		System.out.println("You have chosen to remove rooms from the " + chosenHotel.getsHotelName() + " hotel.");
+		System.out.println("Please select what room to remove: ");
+		int j = 1;
+		for (Room i : chosenHotel.getHotelRooms()) {
+			String name = i.getsRoomName();
+			System.out.println("\t" + j + ". Room " + name);
+			j++;
+		}
+		
+		int choice = sc.nextInt();		
+		System.out.println("Are you sure you want to REMOVE Room " + chosenHotel.getHotelRooms().get(choice - 1).getsRoomName() + " from the system?");
+		System.out.println("You cannot undo this action. (Type Yes to Proceed)");
+		
+		sc.nextLine();
+		String YesOrNo = sc.nextLine();
+		if (YesOrNo.toLowerCase().equals("yes"))
+			chosenHotel.getHotelRooms().remove(choice - 1);
+		else
+			System.out.println("You have chosen to keep: Room " + chosenHotel.getHotelRooms().get(choice - 1).getsRoomName());
+		
+		System.out.println("The current rooms left in " + chosenHotel.getsHotelName() + " are: ");
+		j = 1;
+		for (Room i : chosenHotel.getHotelRooms()) {
+			String name = i.getsRoomName();
+			System.out.println("\t" + j + ". " + name);
+			j++;
+		}
+		
+		System.out.println("Returning to Main Menu. Press Enter to Continue...");
+		sc.nextLine();
+		cls();
 	}
 	
 	public static void UpdateRoomBasePrices(Hotel chosenHotel) {
@@ -155,7 +184,12 @@ public class HotelReservationSystem {
 		double newPrice = sc.nextDouble();
 		
 		chosenHotel.UpdateBasePriceOfRooms(newPrice);
-		System.out.printf("\nSuccess! The new base price of %s's rooms is now: %fPHP.", chosenHotel.getsHotelName(), Room.dBasePricePerNight);
+		System.out.printf("\nSuccess! The new base price of %s's rooms is now: %.2fPHP!\n", chosenHotel.getsHotelName(), Room.dBasePricePerNight);
+		
+		System.out.println("Returning to Main Menu. Press Enter to Continue...");
+		sc.nextLine();
+		sc.nextLine();
+		cls();
 	}
 	
 	public static void RemoveReservation(Hotel chosenHotel) {
@@ -163,7 +197,29 @@ public class HotelReservationSystem {
 	}
 	
 	public static void RemoveHotel(Hotel chosenHotel) {
+		//TODO remove multiple hotels?
+		Scanner sc = new Scanner(System.in);
+		System.out.println("You have chosen to remove the " + chosenHotel.getsHotelName() + " hotel.");
+		System.out.println("Are you sure you want to REMOVE " + chosenHotel.getsHotelName() + " from the system?");
+		System.out.println("You cannot undo this action. (Type Yes to Proceed)");
+		String YesOrNo = sc.nextLine();
 		
+		if (YesOrNo.toLowerCase().equals("yes"))
+			hotelsInHRS.remove(chosenHotel);
+		else
+			System.out.println("You have chosen to keep the hotel: " + chosenHotel.getsHotelName());
+		System.out.println("The current hotels left in the Hotel Reservation System are: ");
+		
+		int j = 1;
+		for (Hotel i : hotelsInHRS) {
+			String name = i.getsHotelName();
+			System.out.println("\t" + j + ". " + name);
+			j++;
+		}
+		
+		System.out.println("Returning to Main Menu. Press Enter to Continue...");
+		sc.nextLine();
+		cls();
 	}
 	
 	public static void ManageHotel() {
@@ -210,7 +266,17 @@ public class HotelReservationSystem {
 	}
 	
 	public static void SimulateBooking() {
+		Scanner sc = new Scanner(System.in);
+		String date = "";
 		
+		//double check if check out date is AFTER check in date
+		System.out.println("Please input your Check-In date in dd-mm-yy format: ");
+		date = sc.nextLine();
+		Date CheckInDate = new Date (date);
+		
+		System.out.println("Please input your Check-Out date in dd-mm-yy format: ");
+		date = sc.nextLine();
+		Date CheckOutDate = new Date (date);
 	}
 
 	public static void main(String[] args) {
