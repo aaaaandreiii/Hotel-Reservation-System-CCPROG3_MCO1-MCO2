@@ -37,7 +37,7 @@ public class HotelReservationSystem {
 		System.out.println("Please choose which hotel to view/manage:");
 		
 		int j = 1;
-		//for each loop vv cool lol
+		//for each loop										vv cool lol
 		for (Hotel i : hotelsInHRS) {
 			String name = i.getsHotelName();
 			System.out.println("\t" + j + ". " + name);
@@ -144,16 +144,24 @@ public class HotelReservationSystem {
 		
 		//TODO multiple rooms?
 		System.out.println("You have chosen to remove rooms from the " + chosenHotel.getsHotelName() + " hotel.");
-		System.out.println("Please select what room to remove: ");
+		System.out.println("\nPlease select what room to remove: ");
 		int j = 1;
+		System.out.println("\tNo.Room No.\t Status");
 		for (Room i : chosenHotel.getHotelRooms()) {
 			String name = i.getsRoomName();
-			System.out.println("\t" + j + ". Room " + name);
+			boolean status = i.checkIfRoomIsBooked(0, 364);
+			
+			if (status == true) {
+				System.out.println("\t" + j + ". Room " + name + "\t This room cannot be removed.");
+			} else {
+				System.out.println("\t" + j + ". Room " + name + "\t This room may be removed.");
+			}
+			
 			j++;
 		}
 		
 		int choice = sc.nextInt();		
-		System.out.println("Are you sure you want to REMOVE Room " + chosenHotel.getHotelRooms().get(choice - 1).getsRoomName() + " from the system?");
+		System.out.println("Are you sure you want to REMOVE this Room " + chosenHotel.getHotelRooms().get(choice - 1).getsRoomName() + " from the system?");
 		System.out.println("You cannot undo this action. (Type Yes to Proceed)");
 		
 		sc.nextLine();
@@ -193,7 +201,48 @@ public class HotelReservationSystem {
 	}
 	
 	public static void RemoveReservation(Hotel chosenHotel) {
+		Scanner sc = new Scanner(System.in);
 		
+		//TODO multiple reservations to remove?
+		System.out.println("You have chosen to remove reservations from the " + chosenHotel.getsHotelName() + " hotel.");
+		System.out.println("Please select whose reservation or what room's reservation to remove: ");
+		int j = 1;
+		for (Reservation i : chosenHotel.getHotelReservations()) {
+			int num = i.getReservationNumber();
+			String name = i.getsGuestName();
+			String room = i.getRoom().getsRoomName();
+			System.out.println("\t" + j + ". Reservation No. " + num + "\tCustomer " + name + "\tin Room " + room);
+			j++;
+		}
+		
+		int choice = sc.nextInt();		
+		System.out.println("Are you sure you want to REMOVE this Reservation No. "
+							+ chosenHotel.getHotelReservations().get(choice - 1).getReservationNumber()
+							+ " by Guest " 
+							+ chosenHotel.getHotelReservations().get(choice - 1).getsGuestName()
+							+ " in Room "
+							+ chosenHotel.getHotelRooms().get(choice - 1).getsRoomName() 
+							+ " from the system?");
+		System.out.println("You cannot undo this action. (Type Yes to Proceed)");
+		
+		sc.nextLine();
+		String YesOrNo = sc.nextLine();
+		if (YesOrNo.toLowerCase().equals("yes"))
+			chosenHotel.getHotelReservations().remove(choice - 1);
+		else
+			System.out.println("You have chosen to keep: Room " + chosenHotel.getHotelRooms().get(choice - 1).getsRoomName());
+		
+		System.out.println("The current rooms left in " + chosenHotel.getsHotelName() + " are: ");
+		j = 1;
+		for (Room i : chosenHotel.getHotelRooms()) {
+			String name = i.getsRoomName();
+			System.out.println("\t" + j + ". " + name);
+			j++;
+		}
+		
+		System.out.println("Returning to Main Menu. Press Enter to Continue...");
+		sc.nextLine();
+		cls();
 	}
 	
 	public static void RemoveHotel(Hotel chosenHotel) {

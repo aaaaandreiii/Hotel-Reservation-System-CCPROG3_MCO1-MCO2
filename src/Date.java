@@ -37,7 +37,7 @@ public class Date {
 				this.nDaysOfMonth = 31;
 				break;
 			case 2:			// February
-				this.nDaysOfMonth = 28;
+				this.nDaysOfMonth = 29;
 				break;
 			case 3:			// March
 				this.nDaysOfMonth = 31;

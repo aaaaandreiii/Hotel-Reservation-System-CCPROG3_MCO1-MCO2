@@ -10,7 +10,6 @@ public class Hotel {
 	private ArrayList<Room> hotelRooms = new ArrayList<>();
 	private ArrayList<Reservation> hotelReservations = new ArrayList<>();
 	private int nCountOfRooms = 0;
-	private int nCountOfReservations = 0;
 
 
 	public Hotel(String sHotelName) {
@@ -18,11 +17,9 @@ public class Hotel {
 		System.out.println("New Hotel Established: " + this.sHotelName + "\n");
 		//Create new room
 		Room newRoom1 = new Room(1,1);
+		
 		this.hotelRooms.add(newRoom1);
 		this.nCountOfRooms++;
-		
-		//Initialize nCountOfReservations to zero
-		this.nCountOfReservations = 0;
 	}
 	
 	public void createRoom() {
@@ -83,10 +80,6 @@ public class Hotel {
 		return nCountOfRooms;
 	}
 
-	public int getnCountOfReservations() {
-		return nCountOfReservations;
-	}
-	
 	public void UpdateBasePriceOfRooms(double newPrice) {
 		Scanner sc = new Scanner(System.in);
 		double num = newPrice;
