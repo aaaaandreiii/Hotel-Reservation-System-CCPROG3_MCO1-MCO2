@@ -13,7 +13,7 @@ public class Reservation {
 	private double dTotalPriceOfBooking;
 	private double dCostPerNight;
 	
-	public Reservation (String sGuestName, Date CheckInDate, Date CheckOutDate, int nNumDaysOfStay, Room room) {
+	public Reservation (String sGuestName, Date CheckInDate, Date CheckOutDate, Room room) {
 		
 		this.reservationNumber = setReservationNumber();
 		existingReservationNumbers.add(this.reservationNumber);

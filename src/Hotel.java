@@ -9,7 +9,6 @@ public class Hotel {
 	private String sHotelName;
 	private ArrayList<Room> hotelRooms = new ArrayList<>();
 	private ArrayList<Reservation> hotelReservations = new ArrayList<>();
-	private int nCountOfRooms = 0;
 
 
 	public Hotel(String sHotelName) {
@@ -19,12 +18,11 @@ public class Hotel {
 		Room newRoom1 = new Room(1,1);
 		
 		this.hotelRooms.add(newRoom1);
-		this.nCountOfRooms++;
 	}
 	
 	public void createRoom() {
 		Scanner sc = new Scanner(System.in);
-		if (!(this.nCountOfRooms < 50))
+		if (!(this.hotelRooms.size() < 50))
 			throw new IllegalArgumentException("Hotel name already exists");
 		else {
 			System.out.println("\nCreating Room...");
@@ -36,10 +34,7 @@ public class Hotel {
 			Room newRoom = new Room(floor, roomNum);
 			
 			this.hotelRooms.add(newRoom);
-			System.out.println("Room " + newRoom.getsRoomName() + " created!");
-			this.nCountOfRooms++;
-//			System.out.println(this.hotelRooms);
-				
+			System.out.println("Room " + newRoom.getsRoomName() + " created!");				
 		}
 	}
 	
@@ -76,10 +71,6 @@ public class Hotel {
 		existingNames.add(newName);
 	}
 
-	public int getnCountOfRooms() {
-		return nCountOfRooms;
-	}
-
 	public void UpdateBasePriceOfRooms(double newPrice) {
 		Scanner sc = new Scanner(System.in);
 		double num = newPrice;
@@ -92,7 +83,8 @@ public class Hotel {
 			}
 		} while (!(num >= 100));	//do all this while 1000 ! >= 100
 		
-		Room.dBasePricePerNight = newPrice;
+		hotelRooms.get(0).setdBasePricePerNight(newPrice);			//dynamic (??)
+//		Room.dBasePricePerNight = newPrice;							//static
 	}
 	
 	//this needs more editing for more accurate estimation
@@ -112,5 +104,17 @@ public class Hotel {
 
 	public ArrayList<Reservation> getHotelReservations() {
 		return hotelReservations;
+	}
+	
+	//TODO
+	public boolean checkIfHotelIsBooked(Date date) {
+		boolean isBooked = false;
+		for (Room room : hotelRooms) {
+			if (room.checkIfRoomIsBooked(room.DayOfTheYear(date)))
+				isBooked = true;
+			else
+				isBooked = false;
+		}
+		return isBooked;
 	}
 }
