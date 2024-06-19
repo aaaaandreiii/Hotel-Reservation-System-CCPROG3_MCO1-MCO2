@@ -1,15 +1,22 @@
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
-public class Room {
-	private String sRoomName;
-	public static double dBasePricePerNight = 1299;
-	private final Set<String> existingRoomNumbers = new HashSet<>();
-	private ArrayList<Reservation> reservation = new ArrayList<>();; 
-	public boolean[] dateRoomReserved = new boolean[365];
 
+public class Room {
+	public static final ArrayList<Integer> existingRoomIDs = new ArrayList<>();		//refers to room names INSIDE hotel reservation system
+	public static double dBasePricePerNight = 1299;										//room ID is assigned to reservation
+
+	private int roomID;
+	private String sRoomName;
+	private final Set<String> existingRoomNumbers = new HashSet<>();				//refers to room names inside hotel
+	private boolean[] dateRoomReserved = new boolean[365];
+	
 	public Room(int floor, int roomNum) {
+		
+		this.roomID = this.generateRoomID();
+		
 		this.setsRoomName(floor, roomNum);
 		
 		if (existingRoomNumbers.contains(this.sRoomName)) {
@@ -22,6 +29,23 @@ public class Room {
 			this.dateRoomReserved[i] = false;
 		}
 		
+	}
+	
+	public int getRoomID() {
+		return this.roomID;
+	}
+	
+	public int generateRoomID() {
+		Random randomNumber = new Random();
+		int randomRoomIDNumber;
+		
+		do {
+			randomRoomIDNumber = randomNumber.nextInt(10000);
+		} while (existingRoomIDs.contains(randomRoomIDNumber));
+		
+		existingRoomIDs.add(randomRoomIDNumber);
+		
+		return randomRoomIDNumber;
 	}
 	
 	public int DayOfTheYear(Date date) {
@@ -38,7 +62,7 @@ public class Room {
 		return conversion;
 	}
 
-	public void setDateRoomReserved(boolean[] dateRoomReserved, Date CheckIn, Date CheckOut) {
+	public void setDateRoomReserved(Date CheckIn, Date CheckOut) {
 		int date1 = DayOfTheYear(CheckIn);
 		int date2 = DayOfTheYear(CheckOut);
 		
@@ -83,10 +107,12 @@ public class Room {
 	
 	public void printDateRoomReserved() {
 		int[] numOfDaysPerMonth = new int[] {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+		int counter = 0;
 		
-		System.out.println("MM/DD/YYYY");
+		System.out.println("\nThe following dates are in DD-MM-YYYY format.");
 		for (int i = 0; i < 365; i++) {
 			if (this.getDateRoomReserved()[i] == true) {
+				counter++;
 				int dayInYear = i;
 				int monthToday, dayToday;
 				
@@ -104,8 +130,14 @@ public class Room {
 				
 				dayToday = dayInYear - daysPerMonth;
 				
-				System.out.printf("\nThis room is reserved on %d/%d/%d by Guest %s", monthToday, dayToday, 2024, this.reservation.getsGuestName());			
-			}
+				System.out.printf("\nThis room is reserved on %d/%d/%d", dayToday, monthToday, 2024);
+				//TODO
+//				System.out.printf("\nThis room is reserved on %d/%d/%d by Guest %s", 
+//						monthToday, dayToday, 2024, this.reservation.get(i).getsGuestName());			
+			} 
+			
+			if (counter == 0)
+				System.out.println("This room has neither active nor incoming bookings as of today.");
 		}		
 	}
 
@@ -124,13 +156,5 @@ public class Room {
 	
 	public void setdBasePricePerNight(double price) {
 		Room.dBasePricePerNight = price;
-	}
-	
-	public Reservation getReservation() {
-		return reservation;
-	}
-
-	public void setReservation(Reservation reservation) {
-		this.reservation = reservation;
 	}
 }

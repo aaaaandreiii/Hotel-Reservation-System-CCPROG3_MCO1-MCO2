@@ -3,17 +3,20 @@ import java.util.Set;
 import java.util.Random;
 
 public class Reservation {
-	private final Set<Integer> existingReservationNumbers = new HashSet<>();
+	public static final Set<Integer> existingReservationNumbers = new HashSet<>();		//refers to unique idenfication number given by system to every booking customer
+	
 	private int reservationNumber;
+	private int roomID;
 	private String sGuestName;
 	private Date CheckInDate;
 	private Date CheckOutDate;
-	private Room room;
 	private int nNumDaysOfStay;
 	private double dTotalPriceOfBooking;
 	private double dCostPerNight;
 	
 	public Reservation (String sGuestName, Date CheckInDate, Date CheckOutDate, Room room) {
+		
+		this.roomID = room.getRoomID();
 		
 		this.reservationNumber = setReservationNumber();
 		existingReservationNumbers.add(this.reservationNumber);
@@ -24,8 +27,11 @@ public class Reservation {
 		this.nNumDaysOfStay = getnNumDaysOfStay(CheckInDate, CheckOutDate);
 		this.dCostPerNight = this.getdCostPerNight();
 		this.dTotalPriceOfBooking = this.getdTotalPriceOfBooking();
-		this.room = room;
-		System.out.println("Reservation created!");
+		System.out.println("\nReservation created!\n");
+	}
+
+	public int getRoomID() {
+		return this.roomID;
 	}
 
 	public int getReservationNumber() {
@@ -62,10 +68,6 @@ public class Reservation {
 
 	public Date getCheckOutDate() {
 		return CheckOutDate;
-	}
-	
-	public Room getRoom() {
-		return room;
 	}
 	
 	//date1 MUST be checkIn, date2 MUST be checkOut

@@ -20,6 +20,17 @@ public class Hotel {
 		this.hotelRooms.add(newRoom1);
 	}
 	
+	public Room findRoomWithRoomID(int ID) {
+		Room found = null;
+		
+		for (Room i : this.getHotelRooms()) {
+			if (i.getRoomID() == ID) {
+				found = i;
+			}
+		}
+		return found;
+	}
+	
 	public void createRoom() {
 		Scanner sc = new Scanner(System.in);
 		if (!(this.hotelRooms.size() < 50))
@@ -87,13 +98,10 @@ public class Hotel {
 //		Room.dBasePricePerNight = newPrice;							//static
 	}
 	
-	//this needs more editing for more accurate estimation
-	//this could be interpreted kasi as max estimate as in all rooms booked all days of the month
-	//or summation of all reservations in all rooms on all 31 days
 	public double EstimatedEarningsPerMonth() {
 		float estimatedEarningsThisMonth = 0.0f;
-		for (Room room : hotelRooms) {
-			estimatedEarningsThisMonth += room.getReservation().getdTotalPriceOfBooking();
+		for (Reservation reservation : hotelReservations) {
+			estimatedEarningsThisMonth += reservation.getdTotalPriceOfBooking();
 		}
 		return estimatedEarningsThisMonth;
 	}
@@ -106,7 +114,6 @@ public class Hotel {
 		return hotelReservations;
 	}
 	
-	//TODO
 	public boolean checkIfHotelIsBooked(Date date) {
 		boolean isBooked = false;
 		for (Room room : hotelRooms) {
