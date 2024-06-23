@@ -83,6 +83,8 @@ public class Room {
 		for (date1 = DayOfTheYear(CheckIn); date1 < date2; date1++) {
 			if (this.dateRoomReserved[date1] == true) {
 				return true;
+			} else if (this.dateRoomReserved[date1] == false && this.dateRoomReserved[date1++] == true) {
+				return true;
 			}
 		}
 		return false;

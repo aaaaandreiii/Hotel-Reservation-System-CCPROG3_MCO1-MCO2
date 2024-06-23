@@ -18,6 +18,18 @@ public class Date {
         this.setnDaysOfMonth();
 	}
 	
+	//converts date to nth date in year
+	public int dayInYear(Date date) {
+		int[] numOfDaysPerMonth = new int[] {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+		int totalNumOfDays = 0;
+		for (int i = 0; i < date.getnMonth() - 2; i++) {
+			totalNumOfDays += numOfDaysPerMonth[i];
+		}
+		totalNumOfDays += date.getnDay();
+		
+		return totalNumOfDays;
+	}
+	
 	public String printStringDate() {
 		String date = null;
 		date = this.monthWord() + " " + this.nDay + ", " + this.nYear;

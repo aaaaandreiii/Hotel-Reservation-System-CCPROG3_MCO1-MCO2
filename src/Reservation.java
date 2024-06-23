@@ -71,8 +71,12 @@ public class Reservation {
 	public int getnNumDaysOfStay(Date date1, Date date2) {
 		if (date1.getnMonth() == date2.getnMonth())
 			nNumDaysOfStay = (date2.getnDay() - date1.getnDay());
-		else
-			nNumDaysOfStay = (date2.getnDaysOfMonth() - date2.getnDay() + date1.getnDay());
+		else if (date1.getnMonth() < date2.getnMonth()) {
+			nNumDaysOfStay = 0;
+			for (int i = date1.dayInYear(date1); i < date2.dayInYear(date2) - 1; i++) {
+				nNumDaysOfStay++;
+			}
+		}
 		return nNumDaysOfStay;
 	}
 }
