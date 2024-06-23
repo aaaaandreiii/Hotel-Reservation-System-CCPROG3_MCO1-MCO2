@@ -88,6 +88,16 @@ public class Room {
 		return false;
 	}
 	
+	//used in check availability of rooms
+	public boolean checkIfRoomIsBooked(Date date) {
+		int date1 = DayOfTheYear(date);
+		
+		if (this.dateRoomReserved[date1] == true)
+			return true;
+		else
+			return false;
+	}
+	
 	//used in remove room
 	public boolean checkIfRoomIsBooked(int date1, int date2) {	
 		for (date1 = date1; date1 < date2; date1++) {
@@ -140,10 +150,9 @@ public class Room {
 //				System.out.printf("\nThis room is reserved on %d/%d/%d by Guest %s", 
 //						monthToday, dayToday, 2024, this.reservation.get(i).getsGuestName());			
 			} 
-			
-			if (counter == 0)
-				System.out.println("This room has neither active nor incoming bookings as of today.");
-		}		
+		}
+		if (counter == 0)
+			System.out.println("This room has neither active nor incoming bookings as of today.");
 	}
 
 	public String getsRoomName() {

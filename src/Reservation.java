@@ -25,10 +25,6 @@ public class Reservation {
 		this.nNumDaysOfStay = getnNumDaysOfStay(CheckInDate, CheckOutDate);
 		this.dCostPerNight = this.getdCostPerNight();
 		this.dTotalPriceOfBooking = this.getdTotalPriceOfBooking();
-		
-		
-		
-		System.out.println("\nReservation created!\n");
 	}
 
 	public int getRoomID() {

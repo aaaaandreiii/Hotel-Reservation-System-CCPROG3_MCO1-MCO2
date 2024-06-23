@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Scanner;
 import java.io.IOException;
 
@@ -65,12 +64,32 @@ public class HotelReservationSystem {
 		cls();
 	}
 	
-	//TODO
 	public static void ViewAvailableAndBookedRooms(Hotel hotel) {
 		Scanner sc = new Scanner(System.in);
 		
 		System.out.println("\nYou have chosen to view all available and booked rooms.");
-		System.out.println();
+				
+		System.out.println("\nTo view all available and booked rooms," + "\n\tpleease input your selected date in DD-MM-YYYY format");
+		String dateString = sc.nextLine();
+		Date date = new Date(dateString);
+		
+		int j = 1;
+		Boolean isBooked = null;
+		
+		System.out.println("\n\tNo.Room No.\tStatus");
+		for (Room i : hotel.getHotelRooms()) {
+			String name = i.getsRoomName();
+			isBooked = i.checkIfRoomIsBooked(date);
+			if (isBooked == true)
+				System.out.println("\t" + j + ". Room " + name + "\tBooked");
+			else 
+				System.out.println("\t" + j + ". Room " + name + "\tAvailable");
+			j++;
+		}
+			
+		System.out.println("\nReturning to Main Menu. Press Enter to Continue...");
+		sc.nextLine();
+		cls();
 	}
 	
 	public static void ViewInfoOfSelectedRoom(Hotel hotel) {
@@ -99,12 +118,34 @@ public class HotelReservationSystem {
 		cls();
 	}
 	
-	//TODO
 	public static void ViewInfoOfSelectedReservation(Hotel hotel) {
 		Scanner sc = new Scanner(System.in);
 		
 		System.out.println("\nYou have chosen to view all information for a selected reservation.");
-		System.out.println();
+		System.out.println("\nPlease select what reservation to view: ");
+		
+		int j = 1;
+		System.out.println("\tNo.Reservation No.\tRoom No.");
+		for (Reservation i : hotel.getHotelReservations()) {
+			int reservationNum = i.getReservationNumber();
+			String roomNum = hotel.findRoomWithRoomID(i.getRoomID()).getsRoomName();
+			System.out.println("\t" + j + ". No.  " + reservationNum + "\t" + roomNum);
+			j++;
+		}
+		
+		int choice = sc.nextInt();
+		System.out.println("\nYou have selected to view Reservation Number " + hotel.getHotelReservations().get(choice - 1).getReservationNumber() + "'s information.");
+		System.out.println("Reservation booked at: \t" + hotel.getsHotelName());
+		System.out.println("Booked by: \t\t\tGuest " + hotel.getHotelReservations().get(choice - 1).getsGuestName());
+		System.out.println("Room Number: \t\t\t" + hotel.findRoomWithRoomID(hotel.getHotelReservations().get(choice - 1).getRoomID()).getsRoomName());
+		System.out.println("Check-In Date: \t\t\t" + hotel.getHotelReservations().get(choice - 1).getCheckInDate().printStringDate());
+		System.out.println("Check-In Date: \t\t\t" + hotel.getHotelReservations().get(choice - 1).getCheckOutDate().printStringDate());
+		System.out.println("Price per night: \tPHP" + hotel.getHotelReservations().get(choice - 1).getdCostPerNight());
+		System.out.println("Total cost of stay: \tPHP" + hotel.getHotelReservations().get(choice - 1).getdTotalPriceOfBooking());
+		System.out.println("\n\nReturning to Menu. Press Enter to Continue...");
+		sc.nextLine();
+		sc.nextLine();
+		cls();
 	}
 	
 	public static void ViewHotel() {
@@ -242,7 +283,7 @@ public class HotelReservationSystem {
 			double newPrice = sc.nextDouble();
 			
 			chosenHotel.UpdateBasePriceOfRooms(newPrice);
-			System.out.printf("\nSuccess! The new base price of %s's rooms is now: %.2fPHP!\n", chosenHotel.getsHotelName(), Room.dBasePricePerNight);
+			System.out.printf("\nSuccess! The new base price of %s's rooms is now: PHP%.2f!\n", chosenHotel.getsHotelName(), Room.dBasePricePerNight);
 		}
 			
 		System.out.println("\nReturning to Main Menu. Press Enter to Continue...");
@@ -472,30 +513,25 @@ public class HotelReservationSystem {
 		Reservation guestReservation = new Reservation(guestName, CheckInDate, CheckOutDate, hotelsInHRS.get(hotelChoice - 1).getHotelRooms().get(roomChoice - 1));
 		
 		reservationsInHRS.add(guestReservation);
+		hotelsInHRS.get(hotelChoice - 1).getHotelReservations().add(guestReservation);
 		
 		hotelsInHRS.get(hotelChoice - 1).getHotelRooms().get(roomChoice - 1).setDateRoomReserved(CheckInDate, CheckOutDate);
 		
-		System.out.println ("----------------------------------------------------------------------");
-		System.out.println("\nThis booking was made by: \t" + guestReservation.getsGuestName());
+		System.out.println ("\n----------------------------------------------------------------------");
+		System.out.println("This booking was made by: \t" + guestReservation.getsGuestName());
 		System.out.println("You plan to stay from: \t\t" + guestReservation.getCheckInDate().printStringDate() 
 				+ " to " + guestReservation.getCheckOutDate().printStringDate());
 		System.out.println("Your total days of stay is: \t" + guestReservation.getnNumDaysOfStay(CheckInDate, CheckOutDate));
 		System.out.printf("\nAnd with a cost per night of: \tPHP%.2f", guestReservation.getdCostPerNight());
 		System.out.printf("\nYour total bill will be: \tPHP%.2f", guestReservation.getdTotalPriceOfBooking());
-		System.out.println ("----------------------------------------------------------------------");
+		System.out.println ("\n----------------------------------------------------------------------");
 		
 		System.out.println("\nBy typing 'confirm' you are confirming the details of your reservation \n\tand will be redirected to the payments page.");
 		sc.nextLine();
 		sc.nextLine();
 		
-		System.out.println ("\n\n----------------------------------------------------------------------");
+		System.out.println ("\n----------------------------------------------------------------------");
 		System.out.println("Your reservation number is: \t" + guestReservation.getReservationNumber());
-		
-		//TODO, reevaluate, could be done better
-		//find room details through reservation ID
-		
-		CheckBookingWithReservationNumber(guestReservation.getReservationNumber());
-		
 		
 		Room guestRoom = hotelsInHRS.get(hotelChoice - 1).findRoomWithRoomID(guestReservation.getRoomID());
 		
@@ -503,39 +539,10 @@ public class HotelReservationSystem {
 		System.out.println ("----------------------------------------------------------------------");
 		
 		System.out.println("\n\nRedirecting to payments page...");
-		
+		sc.nextLine();
 		System.out.println("\nReturning to Main Menu...");
 		sc.nextLine();
 		cls();
-	}
-	
-	//TODO
-	//give system reservation ID
-		//system cross checks with its own data in reservationsInHRS array
-		//if false, print sorry your reservation number does not exist
-		//if true, system will find hotel name
-			//system finds hotelsInHRS array and checks every hotel object
-			//in every hotel, system checks every room object
-			//check for roomID
-			//when found, 
-	//then system will find room ID
-	//then return hotel name and room name
-	public static void CheckBookingWithReservationNumber(int ReservationNumber) {
-//		int indexOfReservationWithFoundRoomID = 0;
-//		for (Reservation foundReservation : reservationsInHRS) {
-//			if (reservationsInHRS.equals(ReservationNumber) == true) {
-//				indexOfReservationWithFoundRoomID = 
-//			}
-//		}
-//		int i = 0;
-//		for (Hotel foundHotel : hotelsInHRS) {
-//			
-//			for (Room foundRoom : hotelsInHRS.get(i).findRoomWithRoomID(reservationsInHRS.indexOf(ReservationNumber))) {
-////				hotelsInHRS.exi
-//			}
-//			i++;
-//		}
-//		reservationsInHRS.
 	}
 
 	public static void main(String[] args) {
