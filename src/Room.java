@@ -1,21 +1,22 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-
 public class Room {
-	public static final ArrayList<Integer> existingRoomIDs = new ArrayList<>();		//refers to room names INSIDE hotel reservation system
+	public static final Set<Integer> existingRoomIDs = new HashSet<>();		//refers to room names INSIDE hotel reservation system
 	public static double dBasePricePerNight = 1299;										//room ID is assigned to reservation
 
-	private int roomID;
+	private HashMap<Integer, String> roomIDWithHotelNameMap = new HashMap<>();
 	private String sRoomName;
 	private final Set<String> existingRoomNumbers = new HashSet<>();				//refers to room names inside hotel
 	private boolean[] dateRoomReserved = new boolean[365];
 	
-	public Room(int floor, int roomNum) {
-		
-		this.roomID = this.generateRoomID();
+	public Room(int floor, int roomNum, String hotelName) {
+		int roomID = this.generateRoomID();
+		String hotel = hotelName; 
+		this.roomIDWithHotelNameMap.put(roomID, hotel);
 		
 		this.setsRoomName(floor, roomNum);
 		
@@ -27,12 +28,16 @@ public class Room {
 		//initialize dateRoomReserved
 		for (int i = 0; i < 365; i++) {
 			this.dateRoomReserved[i] = false;
-		}
-		
+		}		
 	}
 	
+	public HashMap<Integer, String> getRoomIDWithHotelNameMap() {
+		return this.roomIDWithHotelNameMap;
+	}
+
+	//idk if will work
 	public int getRoomID() {
-		return this.roomID;
+		return (int) this.roomIDWithHotelNameMap.keySet().toArray()[0];
 	}
 	
 	public int generateRoomID() {

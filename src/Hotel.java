@@ -15,18 +15,22 @@ public class Hotel {
 		setsHotelName(sHotelName);
 		System.out.println("New Hotel Established: " + this.sHotelName + "\n");
 		//Create new room
-		Room newRoom1 = new Room(1,1);
+		Room room = new Room(1, 1, this.getsHotelName());
 		
-		this.hotelRooms.add(newRoom1);
+		this.hotelRooms.add(room);
 	}
 	
 	public Room findRoomWithRoomID(int ID) {
 		Room found = null;
+		int i = 0;
 		
-		for (Room i : this.getHotelRooms()) {
-			if (i.getRoomID() == ID) {
-				found = i;
+		if (Room.existingRoomIDs.contains(ID)) {
+			for (Room room : this.hotelRooms) {
+				if ((int) this.hotelRooms.get(i).getRoomIDWithHotelNameMap().keySet().toArray()[0] == ID)
+					found = hotelRooms.get(i);
+				i++;
 			}
+			
 		}
 		return found;
 	}
@@ -42,7 +46,7 @@ public class Hotel {
 			System.out.println("What room number will you be assigning the room?");
 				int roomNum = sc.nextInt();
 				
-			Room newRoom = new Room(floor, roomNum);
+			Room newRoom = new Room(floor, roomNum, this.getsHotelName());
 			
 			this.hotelRooms.add(newRoom);
 			System.out.println("Room " + newRoom.getsRoomName() + " created!");				

@@ -15,18 +15,19 @@ public class Reservation {
 	private double dCostPerNight;
 	
 	public Reservation (String sGuestName, Date CheckInDate, Date CheckOutDate, Room room) {
-		
-		this.roomID = room.getRoomID();
-		
 		this.reservationNumber = setReservationNumber();
 		existingReservationNumbers.add(this.reservationNumber);
 		
+		this.roomID = room.getRoomID();
 		this.sGuestName = sGuestName;
 		this.CheckInDate = CheckInDate;
 		this.CheckOutDate = CheckOutDate;
 		this.nNumDaysOfStay = getnNumDaysOfStay(CheckInDate, CheckOutDate);
 		this.dCostPerNight = this.getdCostPerNight();
 		this.dTotalPriceOfBooking = this.getdTotalPriceOfBooking();
+		
+		
+		
 		System.out.println("\nReservation created!\n");
 	}
 

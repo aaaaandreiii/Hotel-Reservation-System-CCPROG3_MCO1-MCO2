@@ -1,4 +1,3 @@
-
 public class Date {
 	private int nDay;
 	private int nMonth;
@@ -6,8 +5,8 @@ public class Date {
 	private int nDaysOfMonth;
 	private String[] dateParts;
 	
+	//empty constructor just to instantiate object
 	public Date() {
-		
 	}
 	
 	public Date(String rawDate) {
