@@ -1,17 +1,38 @@
+/**
+ * CCPROG3 MCO1: Hotel Reservation System
+ * Filename: HotelReservationSystem.java
+ * @author Andrei Balingit	| 12203297
+ * @version 24/06/2024
+ * 
+ */
+
+/**
+ * Represents the hotel reservation system which includes methods for managing hotels, rooms, and reservations.
+ */
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.IOException;
 
 //public static variables are for var that the system needs to access, regardless of class/object/instantiation
 
+/**
+ * HotelReservationSystem class provides functionalities to manage hotels, rooms, and reservations.
+ */
 public class HotelReservationSystem {
+	
+	/**
+	 * The following libraries were imported to be used in certain sections of the program:
+	 * 		ArrayList of hotels in the reservation system.
+	 * 		ArrayList of reservations in the reservation system.
+	 */
 	private static ArrayList<Hotel> hotelsInHRS = new ArrayList<>();
 	private static ArrayList<Reservation> reservationsInHRS = new ArrayList<>();
-	
 		
-	
-	// credit to Amit Rawat from https://intellipaat.com/community/294/java-clear-the-console
-	// for this system("cls") method
+	/**
+	 * Clears the console screen.
+	 * System("cls") method
+	 * credit to Amit Rawat from https://intellipaat.com/community/294/java-clear-the-console
+	 */
 	@SuppressWarnings("deprecation")
 	public static void cls(){
 		try {									
@@ -21,7 +42,10 @@ public class HotelReservationSystem {
 				Runtime.getRuntime().exec("clear");
 		} catch (IOException | InterruptedException ex) {}
 	}
-		
+	
+	/**
+	 * Creates a new hotel and adds it to the list of hotels.
+	 */
 	public static void CreateHotel() {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("\nYou have chosen Option 1: Create Hotel!\n");
@@ -35,6 +59,10 @@ public class HotelReservationSystem {
 		cls();
 	}
 	
+	/**
+	 * Prompts the user to select a hotel from the list and returns the selected hotel.
+	 * @return the selected hotel.
+	 */
 	public static Hotel WhichHotelToViewManage() {
 		Scanner sc = new Scanner(System.in);
 		
@@ -51,6 +79,10 @@ public class HotelReservationSystem {
 		return hotelsInHRS.get(choice - 1);
 	}
 	
+	/**
+	 * Displays high-level information of the selected hotel.
+	 * @param hotel - the hotel to view information of.
+	 */
 	public static void ViewHighLevelHotelInformation(Hotel hotel) {
 		Scanner sc = new Scanner(System.in);
 		
@@ -58,12 +90,16 @@ public class HotelReservationSystem {
 		
 		System.out.println("\nName of Hotel: " + hotel.getsHotelName());
 		System.out.println("Total Number of Rooms: " + hotel.getHotelRooms().size());
-		System.out.println("Estimated Earnings of the Month: " + hotel.EstimatedEarningsPerMonth());
-		System.out.println("\nReturning to Main Menu. Press Enter to Continue...\n");
+		System.out.printf("Estimated Earnings of the Month: PHP%.2f", hotel.EstimatedEarningsPerMonth());
+		System.out.println("\n\nReturning to Main Menu. Press Enter to Continue...\n");
 		sc.nextLine();
 		cls();
 	}
 	
+	/**
+	 * Displays the available and booked rooms of the selected hotel.
+	 * @param hotel - The hotel to view room availability.
+	 */
 	public static void ViewAvailableAndBookedRooms(Hotel hotel) {
 		Scanner sc = new Scanner(System.in);
 		
@@ -92,6 +128,10 @@ public class HotelReservationSystem {
 		cls();
 	}
 	
+	/**
+	 * Displays detailed information of the selected room in the given hotel.
+	 * @param hotel - The hotel to view room information.
+	 */
 	public static void ViewInfoOfSelectedRoom(Hotel hotel) {
 		Scanner sc = new Scanner(System.in);
 		
@@ -109,45 +149,59 @@ public class HotelReservationSystem {
 		int choice = sc.nextInt();
 		System.out.println("\nYou have selected to view Room " + hotel.getHotelRooms().get(choice - 1).getsRoomName() + "'s information.");
 		System.out.println("Room Name: " + hotel.getHotelRooms().get(choice - 1).getsRoomName());
-		System.out.println("Price per night: " + hotel.getHotelRooms().get(choice - 1).getdBasePricePerNight());
+		System.out.printf("Price per night: PHP%.2f", hotel.getHotelRooms().get(choice - 1).getdBasePricePerNight());
+		System.out.println();
 		hotel.getHotelRooms().get(choice - 1).printDateRoomReserved();
-		System.out.println("\nAside from those above, the room is available to be booked for the rest of the year.");
+//		System.out.println("\nAside from those above, the room is available to be booked for the rest of the year.");
 		System.out.println("\n\nReturning to Menu. Press Enter to Continue...");
 		sc.nextLine();
 		sc.nextLine();
 		cls();
 	}
 	
+	/**
+	 * Displays detailed information of the selected reservation in the given hotel.
+	 * @param hotel - The hotel to view reservation information.
+	 */
 	public static void ViewInfoOfSelectedReservation(Hotel hotel) {
 		Scanner sc = new Scanner(System.in);
 		
 		System.out.println("\nYou have chosen to view all information for a selected reservation.");
-		System.out.println("\nPlease select what reservation to view: ");
 		
-		int j = 1;
-		System.out.println("\tNo.Reservation No.\tRoom No.");
-		for (Reservation i : hotel.getHotelReservations()) {
-			int reservationNum = i.getReservationNumber();
-			String roomNum = hotel.findRoomWithRoomID(i.getRoomID()).getsRoomName();
-			System.out.println("\t" + j + ". No.  " + reservationNum + "\t\t\t" + roomNum);
-			j++;
+		
+		if (hotel.getHotelReservations().isEmpty()) {
+			System.out.println("There are no reservations in this hotel yet.");
+		} else {
+			System.out.println("\nPlease select what reservation to view: ");
+			int j = 1;
+			System.out.println("\tNo.Reservation No.\tRoom No.");
+			for (Reservation i : hotel.getHotelReservations()) {
+				int reservationNum = i.getReservationNumber();
+				String roomNum = hotel.findRoomWithRoomID(i.getRoomID()).getsRoomName();
+				System.out.println("\t" + j + ". No.  " + reservationNum + "\t\t" + roomNum);
+				j++;
+			}
+			
+			int choice = sc.nextInt();
+			System.out.println("\nYou have selected to view Reservation Number " + hotel.getHotelReservations().get(choice - 1).getReservationNumber() + "'s information.");
+			System.out.println("Reservation booked at: \t" + hotel.getsHotelName());
+			System.out.println("Booked by: \t\tGuest " + hotel.getHotelReservations().get(choice - 1).getsGuestName());
+			System.out.println("Room Number: \t\t" + hotel.findRoomWithRoomID(hotel.getHotelReservations().get(choice - 1).getRoomID()).getsRoomName());
+			System.out.println("Check-In Date: \t\t" + hotel.getHotelReservations().get(choice - 1).getCheckInDate().printStringDate());
+			System.out.println("Check-In Date: \t\t" + hotel.getHotelReservations().get(choice - 1).getCheckOutDate().printStringDate());
+			System.out.printf("Price per night: \tPHP%.2f", hotel.getHotelReservations().get(choice - 1).getdCostPerNight());
+			System.out.println("\nTotal cost of stay: \tPHP" + hotel.getHotelReservations().get(choice - 1).getdTotalPriceOfBooking());
+			
 		}
-		
-		int choice = sc.nextInt();
-		System.out.println("\nYou have selected to view Reservation Number " + hotel.getHotelReservations().get(choice - 1).getReservationNumber() + "'s information.");
-		System.out.println("Reservation booked at: \t" + hotel.getsHotelName());
-		System.out.println("Booked by: \t\tGuest " + hotel.getHotelReservations().get(choice - 1).getsGuestName());
-		System.out.println("Room Number: \t\t" + hotel.findRoomWithRoomID(hotel.getHotelReservations().get(choice - 1).getRoomID()).getsRoomName());
-		System.out.println("Check-In Date: \t\t" + hotel.getHotelReservations().get(choice - 1).getCheckInDate().printStringDate());
-		System.out.println("Check-In Date: \t\t" + hotel.getHotelReservations().get(choice - 1).getCheckOutDate().printStringDate());
-		System.out.println("Price per night: \tPHP" + hotel.getHotelReservations().get(choice - 1).getdCostPerNight());
-		System.out.println("Total cost of stay: \tPHP" + hotel.getHotelReservations().get(choice - 1).getdTotalPriceOfBooking());
-		System.out.println("\n\nReturning to Menu. Press Enter to Continue...");
+		System.out.println("\nReturning to Menu. Press Enter to Continue...");
 		sc.nextLine();
 		sc.nextLine();
 		cls();
 	}
 	
+	/**
+	 * Prompts the user to select a hotel to view and manage its details.
+	 */
 	public static void ViewHotel() {
 		Scanner sc = new Scanner(System.in);
 		String choice = "";
@@ -184,6 +238,11 @@ public class HotelReservationSystem {
 		} while (!(choice.equals("5")));
 	}
 	
+	/**
+	 * Changes the name of the hotel according to the inputted new string. 
+	 * Goes through validation before change.
+	 * @param chosenHotel - the hotel which name is to be changed
+	 */
 	public static void ChangeNameOfHotel(Hotel chosenHotel) {
 		Scanner sc = new Scanner(System.in);
 		
@@ -197,6 +256,10 @@ public class HotelReservationSystem {
 		cls();
 	}
 	
+	/**
+	 * Adds rooms to the specified hotel.
+	 * @param chosenHotel - hotel to be added rooms to.
+	 */
 	public static void AddRooms(Hotel chosenHotel) {
 		Scanner sc = new Scanner(System.in);
 		
@@ -208,6 +271,10 @@ public class HotelReservationSystem {
 		cls();
 	}
 	
+	/**
+	 * Removes rooms from the specified hotel.
+	 * @param chosenHotel - hotel to have rooms removed from.
+	 */
 	public static void RemoveRooms(Hotel chosenHotel) {
 		Scanner sc = new Scanner(System.in);
 		
@@ -260,6 +327,10 @@ public class HotelReservationSystem {
 		cls();
 	}
 	
+	/**
+	 * Updates the base prices of rooms.
+	 * @param chosenHotel - hotel to have room base prices updated.
+	 */
 	public static void UpdateRoomBasePrices(Hotel chosenHotel) {
 		Scanner sc = new Scanner(System.in);
 		
@@ -276,7 +347,7 @@ public class HotelReservationSystem {
 		Boolean isBooked = chosenHotel.checkIfHotelIsBooked(date);
 		if (isBooked == true) {
 			System.out.println("\nApologies. You cannot change the base price of rooms today.");
-			System.out.printf("\nThe base price of %s's rooms is still: %.2fPHP!\n", chosenHotel.getsHotelName(), Room.dBasePricePerNight);
+			System.out.printf("\nThe base price of %s's rooms is still: PHP%.2f!\n", chosenHotel.getsHotelName(), Room.dBasePricePerNight);
 		} else {
 			System.out.println("\nSuccess! There are no hotel reservations today! You may change the base price of rooms.");
 			System.out.println("Please input a new base price: ");
@@ -292,6 +363,10 @@ public class HotelReservationSystem {
 		cls();
 	}
 	
+	/**
+	 * Remove reservations from the hotel reservation system.
+	 * @param chosenHotel - removes reservations from the hotel as well.
+	 */
 	public static void RemoveReservation(Hotel chosenHotel) {
 		Scanner sc = new Scanner(System.in);
 		
@@ -339,6 +414,10 @@ public class HotelReservationSystem {
 		cls();
 	}
 	
+	/**
+	 * Removes hotels from the hotel reservation system.
+	 * @param chosenHotel - hotel to be removed.
+	 */
 	public static void RemoveHotel(Hotel chosenHotel) {
 		//TODO remove multiple hotels?
 		Scanner sc = new Scanner(System.in);
@@ -365,6 +444,9 @@ public class HotelReservationSystem {
 		cls();
 	}
 	
+	/**
+	 * Prompts the user for options to manage the hotels in the system.
+	 */
 	public static void ManageHotel() {
 		Scanner sc = new Scanner(System.in);
 		String choice = "";
@@ -406,7 +488,9 @@ public class HotelReservationSystem {
 		} while (!(choice.equals("7")));
 	}
 	
-	
+	/**
+	 * Prompts the user with a series of instructions and questions to simulate the booking process.
+	 */
 	public static void SimulateBooking() {
 		Scanner sc = new Scanner(System.in);
 		
@@ -504,7 +588,8 @@ public class HotelReservationSystem {
 			boolean status = i.checkIfRoomIsBooked(CheckInDate, CheckOutDate);
 			
 			if (status == false) {
-				System.out.println("\t" + j + ". Room " + name + "\t" + Room.dBasePricePerNight);
+				System.out.printf("\t%d. Room %s\t%.2f", j, name, Room.dBasePricePerNight);
+//				System.out.println("\t" + j + ". Room " + name + "\t" + Room.dBasePricePerNight);
 				counter++;
 			}
 			j++;
@@ -553,9 +638,12 @@ public class HotelReservationSystem {
 			sc.nextLine();
 			cls();
 		}
-		
 	}
 
+	/**
+	 * Main method that runs all other classes and methods.
+	 * @param args - string array
+	 */
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);  // Create a Scanner object
 		String choice = "";
