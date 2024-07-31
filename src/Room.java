@@ -21,7 +21,7 @@ import java.util.Set;
 /**
  * This class represents a Room in a hotel, with attributes and methods to manage room reservations.
  */
-public class Room {
+public abstract class Room {
 	/**
 	 * The following variables are declared to be used by the Room class:
 	 * 		a public static final HashSet of all existing Room IDs - to ensure no duplicate room IDs across the system.
@@ -31,14 +31,13 @@ public class Room {
 	 * 		a private HashSet to store unique existing room numbers within just the hotel
 	 * 		a private boolean array for every room instance to store the 365 days in one year.
 	 */
-	public static final Set<Integer> existingRoomIDs = new HashSet<>();		//refers to room names INSIDE hotel reservation system
-	public static double dBasePricePerNight = 1299;							//room ID is assigned to reservation
-
+	public static final Set<Integer> existingRoomIDs = new HashSet<>();		//refers to room names INSIDE hotel reservation system; room ID is assigned to reservation
 	private HashMap<Integer, String> roomIDWithHotelNameMap = new HashMap<>();
 	private String sRoomName;
 	private final Set<String> existingRoomNumbers = new HashSet<>();		//refers to room names inside hotel
 	private boolean[] dateRoomReserved = new boolean[366];					//Tracks room reservations for each day of the 2024 leap year
-	
+	protected double roomTypeMultiplier;
+	protected String roomType;
 	/**
 	 * This constructor initializes a Room object with a floor number, room number, and hotel name.
 	 * It generates a unique room ID, sets the room name, and initializes the reservation status for the year.
@@ -61,7 +60,15 @@ public class Room {
 		//initialize dateRoomReserved
 		for (int i = 0; i < 365; i++) {
 			this.dateRoomReserved[i] = false;
-		}	
+		}
+	}
+
+	public double getfRroomTypeMultiplier() {
+		return roomTypeMultiplier;
+	}
+
+	public String getRoomType() {
+		return this.roomType;
 	}
 	
 	/**
@@ -174,8 +181,8 @@ public class Room {
 	 */
 	//used in remove room
 	public boolean checkIfRoomIsBooked(int date1, int date2) {	
-		for (date1 = date1; date1 < date2; date1++) {
-			if (this.dateRoomReserved[date1] == true) {
+		for (int i = date1; i < date2; i++) {
+			if (this.dateRoomReserved[i] == true) {
 				return true;
 			}
 		}
@@ -259,21 +266,5 @@ public class Room {
 	public void setsRoomName(int floor, int roomNum) {
 		RoomName name = new RoomName(floor, roomNum);
 		this.sRoomName = name.completeRoomName;
-	}
-
-	/**
-	 * This method is a getter for the base price per night of the room.
-	 * @return dBasePricePerNight - the base price per night of the room.
-	 */
-	public double getdBasePricePerNight() {
-		return dBasePricePerNight;
-	}
-	
-	/**
-	 * This method is a setter for the base price per night of the room.
-	 * @param price - base price per night of the room.
-	 */
-	public void setdBasePricePerNight(double price) {
-		Room.dBasePricePerNight = price;
 	}
 }

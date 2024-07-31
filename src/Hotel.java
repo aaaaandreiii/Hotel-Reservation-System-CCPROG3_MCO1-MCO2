@@ -30,7 +30,8 @@ public class Hotel {
 	 * 		a private array to store all hotel reservations
 	 */
 	public static final Set<String> existingNames = new HashSet<>();	//hashSet to create unique hotel names
-	
+	private double dBasePricePerNight;
+	private double[] datePriceModifierMultiplier;
 	private String sHotelName;
 	private ArrayList<Room> hotelRooms = new ArrayList<>();
 	private ArrayList<Reservation> hotelReservations = new ArrayList<>();
@@ -42,11 +43,28 @@ public class Hotel {
 	 */
 	public Hotel(String sHotelName) {
 		setsHotelName(sHotelName);
+
+		// initialize base price as per specs
+		this.dBasePricePerNight = 1299;
+
+		//initialize datePriceModifier
+		this.datePriceModifierMultiplier = new double[366];
+		for (int i = 0; i < 366; i++) {
+			this.datePriceModifierMultiplier[i] = 1.0;
+		}		
+
 		System.out.println("New Hotel Established: " + this.sHotelName + "\n");
 		//Create new room
-		Room room = new Room(1, 1, this.getsHotelName());
-		
+		Room room = new StandardRoom(1, 1, this.getsHotelName());
 		this.hotelRooms.add(room);
+	}
+
+	public double[] getdatePriceModifierMultiplier() {
+		return datePriceModifierMultiplier;
+	}
+
+	public void setdatePriceModifierMultiplier(int dayInYear, double multiplier) {
+		datePriceModifierMultiplier[dayInYear] = multiplier;
 	}
 	
 	/**
@@ -60,7 +78,7 @@ public class Hotel {
 		
 		if (Room.existingRoomIDs.contains(ID)) {
 			for (Room room : this.hotelRooms) {
-				if ((int) this.hotelRooms.get(i).getRoomIDWithHotelNameMap().keySet().toArray()[0] == ID)
+				if ((int) room.getRoomIDWithHotelNameMap().keySet().toArray()[0] == ID)
 					found = hotelRooms.get(i);
 				i++;
 			}
@@ -74,21 +92,75 @@ public class Hotel {
 	 * Prompts the user for room details and adds the new room to the hotel.
 	 */
 	public void createRoom() {
+		int floor = 0, roomNum = 0, roomType = 0;
+		boolean validInput = false;
+		
 		Scanner sc = new Scanner(System.in);
-		if (!(this.hotelRooms.size() < 50))
-//			throw new IllegalArgumentException("Apologies. You cannot create more than 50 rooms.");
-			System.out.println("Apologies. You cannot create more than 50 rooms.");
-		else {
-			System.out.println("\nCreating Room...");
-			System.out.println("What floor is the room located in?");
-				int floor = sc.nextInt();
-			System.out.println("What room number will you be assigning the room?");
-				int roomNum = sc.nextInt();
+			if (!(this.hotelRooms.size() < 50))
+				System.out.println("Apologies. You cannot create more than 50 rooms.");
+			else {
+				System.out.println("\nCreating Room...");
 				
-			Room newRoom = new Room(floor, roomNum, this.getsHotelName());
-			
-			this.hotelRooms.add(newRoom);
-			System.out.println("Room " + newRoom.getsRoomName() + " created!");				
+			do {
+				try {
+					System.out.println("What floor is the room located in?");
+					floor = sc.nextInt();
+					validInput = true; // If input is valid, set the flag to true
+				} catch (Exception e) {
+					validInput = false;
+					System.out.println("Please input a valid floor number.");
+					System.err.println("Exception found : " + e.getMessage());
+					sc.next(); // Clear the invalid input
+				} 
+			} while (!validInput);
+			validInput = false;	// reset flag upon completion of scanner input
+				
+			do {
+				try {
+					System.out.println("What room number will you be assigning the room?");
+					roomNum = sc.nextInt();
+					validInput = true; // If input is valid, set the flag to true
+				} catch (Exception e) {
+					validInput = false;
+					System.out.println("Please input a valid room number.");
+					System.err.println("Exception found : " + e.getMessage());
+					sc.next(); // Clear the invalid input
+				}
+			} while (!validInput);
+			validInput = false;	// reset flag upon completion of scanner input
+				
+			do {
+				try {
+					System.out.println("What type of room would you like this to be?");
+					System.out.println("\t1. Standard Room");
+					System.out.println("\t2. Deluxe Room");
+					System.out.println("\t3. Executive Room");
+					roomType = sc.nextInt();
+							
+					if (roomType == 1) {
+						Room newRoom = new StandardRoom(floor, roomNum, this.getsHotelName());
+						this.hotelRooms.add(newRoom);
+						System.out.println("Room " + newRoom.getsRoomName() + " of Standard type created!");
+					} else if (roomType == 2) {
+						Room newRoom = new DeluxeRoom(floor, roomNum, this.getsHotelName());
+						this.hotelRooms.add(newRoom);
+						System.out.println("Room " + newRoom.getsRoomName() + " of Deluxe type created!");
+					} else if (roomType == 3) {
+						Room newRoom = new ExecutiveRoom(floor, roomNum, this.getsHotelName());
+						this.hotelRooms.add(newRoom);
+						System.out.println("Room " + newRoom.getsRoomName() + " of Executive type created!");
+					} else {
+						System.out.println("Please select a valid room type.");
+					}
+				validInput = true; // If input is valid, set the flag to true
+				} catch (Exception e) {
+					validInput = false;
+					System.out.println("Please input a valid number for the type of room.");
+					System.err.println("Exception found : " + e.getMessage());
+					sc.next(); // Clear the invalid input
+				}
+			} while (!validInput);
+			validInput = false;	// reset flag upon completion of scanner input
 		}
 	}
 	
@@ -107,21 +179,27 @@ public class Hotel {
 	 */
 	public String checkIfValidName(String sHotelName) {
 		Scanner sc = new Scanner(System.in);
-		String name = "";
-		
-		do {
-			
-			if (existingNames.contains(sHotelName)) {
-				System.out.println("Please choose another name. There already exists a hotel with this name.");
-//				throw new IllegalArgumentException("Hotel name already exists");
-				name = sc.nextLine();
-				checkIfValidName(name);
-			}
-			else
-				return sHotelName;
-		} while (!(existingNames.contains(sHotelName)));
-		
-		return name;
+			String name = "";
+			do {
+				if (existingNames.contains(sHotelName)) {
+					System.out.println("Please choose another name. There already exists a hotel with this name.");
+					name = sc.nextLine();
+					checkIfValidName(name);
+				}
+				else
+					return sHotelName;
+			} while (!(existingNames.contains(sHotelName)));
+			return name;
+	}
+
+	public static Boolean checkIfValidName(Boolean GUI, String sHotelName) {
+		if (existingNames.contains(sHotelName)){
+			System.out.println("This hotel name is valid.");
+			return false;
+		} else {
+			System.out.println("There already exists a hotel with this name.");
+			return true;
+		}			
 	}
 	
 	/**
@@ -136,23 +214,22 @@ public class Hotel {
 	}
 
 	/**
+	 * setdBasePricePerNight() - setter for base price
 	 * Updates the base price of all rooms in the hotel.
 	 * @param newPrice - the new base price to set.
 	 */
 	public void UpdateBasePriceOfRooms(double newPrice) {
 		Scanner sc = new Scanner(System.in);
-		double num = newPrice;
-				
-		do {
-			if (!(num >= 100)) {
-				System.out.println("Please increase the new base price of rooms to at least 100PHP");
-				num = sc.nextDouble();
-				UpdateBasePriceOfRooms(num);
-			}
-		} while (!(num >= 100));	//do all this while 1000 ! >= 100
-		
-		hotelRooms.get(0).setdBasePricePerNight(newPrice);			//dynamic (??)
-//		Room.dBasePricePerNight = newPrice;							//static
+			double num = newPrice;
+					
+			do {
+				if (!(num >= 100)) {
+					System.out.println("Please increase the new base price of rooms to at least 100PHP");
+					num = sc.nextDouble();
+					UpdateBasePriceOfRooms(num);
+				}
+			} while (!(num >= 100));	//do all this while 1000 ! >= 100
+		this.dBasePricePerNight = newPrice;
 	}
 	
 	/**
@@ -165,6 +242,13 @@ public class Hotel {
 			estimatedEarningsThisMonth += reservation.getdTotalPriceOfBooking();
 		}
 		return estimatedEarningsThisMonth;
+	}
+
+	/**
+	 * This method is a getter for the base price per night of the room.
+	 */
+	public double getdBasePricePerNight() {
+		return this.dBasePricePerNight;
 	}
 
 	/**

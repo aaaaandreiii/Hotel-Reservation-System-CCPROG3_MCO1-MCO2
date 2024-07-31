@@ -40,7 +40,10 @@ public class Reservation {
 	private Date CheckOutDate;
 	private int nNumDaysOfStay;
 	private double dTotalPriceOfBooking;
-	private double dCostPerNight;
+	private double basePrice;
+	private double[] datePriceModifierMultiplier;
+	private double roomTypeMultiplier;
+	private boolean[] dateRoomReserved = new boolean[366];					//Stores this reservation's reserved dates for each day of the 2024 leap year
 	
 	/**
 	 * This constructor assigns all this class's attributes by passing them directly, computing for their values, or generating them when every object is instantiated.
@@ -54,7 +57,7 @@ public class Reservation {
 	 * @param CheckOutDate - refers to the user's inputed check out date
 	 * @param room - refers to the room object that this reservation is assigned to upon instantiation
 	 */
-	public Reservation (String sGuestName, Date CheckInDate, Date CheckOutDate, Room room) {
+	public Reservation (String sGuestName, Date CheckInDate, Date CheckOutDate, Room room, double basePrice, double[] datePriceModifierMultiplier, double roomTypeMultiplier) {
 		this.reservationNumber = setReservationNumber();
 		existingReservationNumbers.add(this.reservationNumber);
 		
@@ -63,8 +66,41 @@ public class Reservation {
 		this.CheckInDate = CheckInDate;
 		this.CheckOutDate = CheckOutDate;
 		this.nNumDaysOfStay = getnNumDaysOfStay(CheckInDate, CheckOutDate);
-		this.dCostPerNight = this.getdCostPerNight();
-		this.dTotalPriceOfBooking = this.getdTotalPriceOfBooking();
+		this.basePrice = basePrice;
+		this.datePriceModifierMultiplier = datePriceModifierMultiplier;
+		this.roomTypeMultiplier = roomTypeMultiplier;
+		this.dTotalPriceOfBooking = this.computeDTotalPriceOfBooking(basePrice, datePriceModifierMultiplier, roomTypeMultiplier);
+
+		//initialize dateRoomReserved
+		for (int i = 0; i < 365; i++) {
+			this.dateRoomReserved[i] = false;
+		}
+
+		setDateRoomReserved(CheckInDate, CheckOutDate);
+	}
+
+	public Reservation (String sGuestName, Date CheckInDate, Date CheckOutDate, Room room, double basePrice, double[] datePriceModifierMultiplier, double roomTypeMultiplier, double totalCost) {
+		this.reservationNumber = setReservationNumber();
+		existingReservationNumbers.add(this.reservationNumber);
+		
+		this.roomID = room.getRoomID();
+		this.sGuestName = sGuestName;
+		this.CheckInDate = CheckInDate;
+		this.CheckOutDate = CheckOutDate;
+		this.nNumDaysOfStay = getnNumDaysOfStay(CheckInDate, CheckOutDate);
+		this.basePrice = basePrice;
+		this.datePriceModifierMultiplier = datePriceModifierMultiplier;
+		this.roomTypeMultiplier = roomTypeMultiplier;
+		// this.dTotalPriceOfBooking = this.computeDTotalPriceOfBooking(basePrice, datePriceModifierMultiplier, roomTypeMultiplier);
+
+		this.dTotalPriceOfBooking = totalCost;
+
+		//initialize dateRoomReserved
+		for (int i = 0; i < 365; i++) {
+			this.dateRoomReserved[i] = false;
+		}
+
+		setDateRoomReserved(CheckInDate, CheckOutDate);
 	}
 
 	/**
@@ -101,23 +137,32 @@ public class Reservation {
 	}
 	
 	/**
-	 * This is a getter for the total price of booking price of the customer's reservation.
-	 * It does so by multiplying the cost per night and the total days of stay.
+	 * This is a setter for the total price of booking price of the customer's reservation.
+	 * It does so by getting the summation of the base price, multiplied by the room type multiplier, multiplied by the user indicated date price modifier, from 1 to numOfDays
 	 * As no other variable was specified in the specifications to be accounted for (such as additional hotel fees, snack bar fees, breakfast fees, etc), no such variables will be accounted for in the total.
 	 * @return product of the cost per night and the total number of days of stay
 	 */
-	public double getdTotalPriceOfBooking() {
-		return this.dCostPerNight * this.nNumDaysOfStay;
+	public double computeDTotalPriceOfBooking(double basePrice, double[] datePriceModifierMultiplier, double roomTypeMultiplier) {
+		this.dTotalPriceOfBooking = 0;
+
+		for (int i = this.CheckInDate.dayInYear(CheckInDate); i < this.CheckOutDate.dayInYear(CheckOutDate); i++) {
+			this.dTotalPriceOfBooking = this.dTotalPriceOfBooking + (basePrice * roomTypeMultiplier * datePriceModifierMultiplier[i]);
+		}
+
+		return this.dTotalPriceOfBooking;
 	}
 
-	/**
-	 * This method is a getter for the cost per night variable.
-	 * It references the Room class' public public static double variable.
-	 * This means of referencing allows for a more efficient way of attaining the most recent updated cost per night as the Reservation class has no true access to the Room class.
-	 * @return dBasePricePerNight - which refers to the Room class' variable with the same name to be assigned to this class' cost per night.
-	 */
-	public double getdCostPerNight() {
-		return Room.dBasePricePerNight;
+
+	public double getdTotalPriceOfBooking() {
+		return this.dTotalPriceOfBooking;
+	}
+
+	public void setdTotalPriceOfBooking(double price) {
+		this.dTotalPriceOfBooking = price;
+	}
+
+	public double costOnCertainDay(int dayInYear) {
+		return this.basePrice * this.roomTypeMultiplier * this.datePriceModifierMultiplier[dayInYear]; // * 1 day
 	}
 
 	/**
@@ -142,6 +187,52 @@ public class Reservation {
 	 */
 	public Date getCheckOutDate() {
 		return CheckOutDate;
+	}
+
+	/**
+	 * This method converts a Date object into the corresponding day of the year.
+	 * @param date - the date to be converted.
+	 * @return conversion - the day of the year corresponding to the date.
+	 */
+	public int DayOfTheYear(Date date) {
+		int conversion = 0;
+		int month = date.getnMonth();
+		int[] numOfDaysPerMonth = new int[] {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+		
+		for (int i = 0; i < month - 1; i++) {
+			conversion += numOfDaysPerMonth[i];
+		}
+		
+		conversion += date.getnDay();
+		
+		return conversion;
+	}
+
+	/**
+	 * This method sets the room as reserved for the specified date range.
+	 * @param CheckIn - the check-in date.
+	 * @param CheckOut - the check-out date.
+	 */
+	public void setDateRoomReserved(Date CheckIn, Date CheckOut) {
+		int date1 = DayOfTheYear(CheckIn);
+		int date2 = DayOfTheYear(CheckOut);
+		
+		for (date1 = DayOfTheYear(CheckIn); date1 < date2; date1++) {
+			this.dateRoomReserved[date1] = true;
+		}
+	}
+
+	/**
+	 * This method checks if the room is booked on a specific date with an int dataype parameter.
+	 * @param date - the date to check as an integer from the nth day of the year method converter.
+	 * @return true if the room is booked on the date, false otherwise.
+	 */
+	//used in update booking price
+	public boolean checkIfRoomIsBooked(int date) {
+		if (this.dateRoomReserved[date] == true)
+			return true;
+		else
+			return false;
 	}
 	
 	/**

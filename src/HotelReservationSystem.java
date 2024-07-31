@@ -28,25 +28,59 @@ public class HotelReservationSystem {
 	private static ArrayList<Hotel> hotelsInHRS = new ArrayList<>();
 	private static ArrayList<Reservation> reservationsInHRS = new ArrayList<>();
 		
-	/**
-	 * Clears the console screen.
-	 * System("cls") method
-	 * credit to Amit Rawat from https://intellipaat.com/community/294/java-clear-the-console
-	 */
-	@SuppressWarnings("deprecation")
-	public static void cls(){
-		try {									
-			if (System.getProperty("os.name").contains("Windows"))
-				new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-			else
-				Runtime.getRuntime().exec("clear");
-		} catch (IOException | InterruptedException ex) {}
+	public HotelReservationSystem(){
+
+	}
+	
+	public boolean isHotelsInHRSEmpty() {
+		return hotelsInHRS.isEmpty();
+	}
+
+	public boolean isRoomsInHotelsInHRSEmpty(int chosenHotel) {
+		return hotelsInHRS.get(chosenHotel).getHotelRooms().isEmpty();
+	}
+
+	public boolean areThereAnyRoomsAvailableAtTheHotel(int chosenHotel, String date1, String date2) {
+		Date CheckInDate = new Date ();
+		Date CheckOutDate = new Date ();
+
+		String[] dateParts = date1.split("-");
+		int nDay = Integer.parseInt(dateParts[0]);
+		CheckInDate.setnDay(nDay);
+		int nMonth = Integer.parseInt(dateParts[1]);
+		CheckInDate.setnMonth(nMonth);
+		int nYear = Integer.parseInt(dateParts[2]);
+		CheckInDate.setnYear(nYear);
+		dateParts = date2.split("-");
+		nDay = Integer.parseInt(dateParts[0]);
+		CheckOutDate.setnDay(nDay);
+		nMonth = Integer.parseInt(dateParts[1]);
+		CheckOutDate.setnMonth(nMonth);
+		nYear = Integer.parseInt(dateParts[2]);
+		CheckOutDate.setnYear(nYear);
+
+		int roomBooked = 0, roomsAvailable = 0;
+		for (Room room : hotelsInHRS.get(chosenHotel).getHotelRooms()) {
+			roomBooked = 0;
+			for (int i = CheckInDate.dayInYear(CheckInDate); i < CheckOutDate.dayInYear(CheckOutDate); i++){
+				if (room.checkIfRoomIsBooked(i)){
+					// break;
+					roomBooked++;
+				}
+			}
+			if (roomBooked == 0)
+				roomsAvailable++;
+		}
+		if (roomsAvailable > 0)
+			return true;
+		else 
+			return false;
 	}
 	
 	/**
 	 * Creates a new hotel and adds it to the list of hotels.
 	 */
-	public static void CreateHotel() {
+	public void CreateHotel() {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("\nYou have chosen Option 1: Create Hotel!\n");
 		System.out.println("Enter name of hotel:");
@@ -56,14 +90,20 @@ public class HotelReservationSystem {
 		hotelsInHRS.add(newHotel);
 		System.out.println("Returning to Main Menu. Press Enter to Continue...");
 		sc.nextLine();
-		cls();
+		Driver.cls();
+	}
+
+	public void CreateHotel(Boolean GUI, String newHotelName) {
+		System.out.println("\nYou have chosen Option 1: Create Hotel!\n");
+		Hotel newHotel= new Hotel(newHotelName);
+		hotelsInHRS.add(newHotel);
 	}
 	
 	/**
 	 * Prompts the user to select a hotel from the list and returns the selected hotel.
 	 * @return the selected hotel.
 	 */
-	public static Hotel WhichHotelToViewManage() {
+	public Hotel WhichHotelToViewManage() {
 		Scanner sc = new Scanner(System.in);
 		
 		System.out.println("Please choose which hotel to view/manage:");
@@ -83,7 +123,7 @@ public class HotelReservationSystem {
 	 * Displays high-level information of the selected hotel.
 	 * @param hotel - the hotel to view information of.
 	 */
-	public static void ViewHighLevelHotelInformation(Hotel hotel) {
+	public void ViewHighLevelHotelInformation(Hotel hotel) {
 		Scanner sc = new Scanner(System.in);
 		
 		System.out.println("You have chosen to view Hotel Information");
@@ -93,14 +133,14 @@ public class HotelReservationSystem {
 		System.out.printf("Estimated Earnings of the Month: PHP%.2f", hotel.EstimatedEarningsPerMonth());
 		System.out.println("\n\nReturning to Main Menu. Press Enter to Continue...\n");
 		sc.nextLine();
-		cls();
+		Driver.cls();
 	}
 	
 	/**
 	 * Displays the available and booked rooms of the selected hotel.
 	 * @param hotel - The hotel to view room availability.
 	 */
-	public static void ViewAvailableAndBookedRooms(Hotel hotel) {
+	public void ViewAvailableAndBookedRooms(Hotel hotel) {
 		Scanner sc = new Scanner(System.in);
 		
 		System.out.println("\nYou have chosen to view all available and booked rooms.");
@@ -125,14 +165,14 @@ public class HotelReservationSystem {
 			
 		System.out.println("\nReturning to Main Menu. Press Enter to Continue...");
 		sc.nextLine();
-		cls();
+		Driver.cls();
 	}
 	
 	/**
 	 * Displays detailed information of the selected room in the given hotel.
 	 * @param hotel - The hotel to view room information.
 	 */
-	public static void ViewInfoOfSelectedRoom(Hotel hotel) {
+	public void ViewInfoOfSelectedRoom(Hotel hotel) {
 		Scanner sc = new Scanner(System.in);
 		
 		System.out.println("\nYou have chosen to view all information for a selected room.");
@@ -149,21 +189,21 @@ public class HotelReservationSystem {
 		int choice = sc.nextInt();
 		System.out.println("\nYou have selected to view Room " + hotel.getHotelRooms().get(choice - 1).getsRoomName() + "'s information.");
 		System.out.println("Room Name: " + hotel.getHotelRooms().get(choice - 1).getsRoomName());
-		System.out.printf("Price per night: PHP%.2f", hotel.getHotelRooms().get(choice - 1).getdBasePricePerNight());
+		System.out.printf("Price per night: PHP%.2f", hotel.getdBasePricePerNight());
 		System.out.println();
 		hotel.getHotelRooms().get(choice - 1).printDateRoomReserved();
 //		System.out.println("\nAside from those above, the room is available to be booked for the rest of the year.");
 		System.out.println("\n\nReturning to Menu. Press Enter to Continue...");
 		sc.nextLine();
 		sc.nextLine();
-		cls();
+		Driver.cls();
 	}
 	
 	/**
 	 * Displays detailed information of the selected reservation in the given hotel.
 	 * @param hotel - The hotel to view reservation information.
 	 */
-	public static void ViewInfoOfSelectedReservation(Hotel hotel) {
+	public void ViewInfoOfSelectedReservation(Hotel hotel) {
 		Scanner sc = new Scanner(System.in);
 		
 		System.out.println("\nYou have chosen to view all information for a selected reservation.");
@@ -189,20 +229,19 @@ public class HotelReservationSystem {
 			System.out.println("Room Number: \t\t" + hotel.findRoomWithRoomID(hotel.getHotelReservations().get(choice - 1).getRoomID()).getsRoomName());
 			System.out.println("Check-In Date: \t\t" + hotel.getHotelReservations().get(choice - 1).getCheckInDate().printStringDate());
 			System.out.println("Check-In Date: \t\t" + hotel.getHotelReservations().get(choice - 1).getCheckOutDate().printStringDate());
-			System.out.printf("Price per night: \tPHP%.2f", hotel.getHotelReservations().get(choice - 1).getdCostPerNight());
 			System.out.println("\nTotal cost of stay: \tPHP" + hotel.getHotelReservations().get(choice - 1).getdTotalPriceOfBooking());
 			
 		}
 		System.out.println("\nReturning to Menu. Press Enter to Continue...");
 		sc.nextLine();
 		sc.nextLine();
-		cls();
+		Driver.cls();
 	}
 	
 	/**
 	 * Prompts the user to select a hotel to view and manage its details.
 	 */
-	public static void ViewHotel() {
+	public void ViewHotel() {
 		Scanner sc = new Scanner(System.in);
 		String choice = "";
 		
@@ -230,7 +269,7 @@ public class HotelReservationSystem {
 			} else if (choice.equals("5")) {
 				System.out.println("\nReturning to Main Menu. Press Enter to Continue...");
 				sc.nextLine();
-				cls();
+				Driver.cls();
 			} else {
 				System.out.println("uh oh! Please reinput your selection :((\n");
 			}
@@ -243,7 +282,7 @@ public class HotelReservationSystem {
 	 * Goes through validation before change.
 	 * @param chosenHotel - the hotel which name is to be changed
 	 */
-	public static void ChangeNameOfHotel(Hotel chosenHotel) {
+	public void ChangeNameOfHotel(Hotel chosenHotel) {
 		Scanner sc = new Scanner(System.in);
 		
 		System.out.println("\nYou have chosen to change the name of: " + chosenHotel.getsHotelName() + ".");
@@ -253,14 +292,14 @@ public class HotelReservationSystem {
 		System.out.println("Hotel name changed to: " + chosenHotel.getsHotelName() + "\n");
 		System.out.println("\nReturning to Main Menu. Press Enter to Continue...");
 		sc.nextLine();
-		cls();
+		Driver.cls();
 	}
 	
 	/**
 	 * Adds rooms to the specified hotel.
 	 * @param chosenHotel - hotel to be added rooms to.
 	 */
-	public static void AddRooms(Hotel chosenHotel) {
+	public void AddRooms(Hotel chosenHotel) {
 		Scanner sc = new Scanner(System.in);
 		
 		System.out.println("\nYou have chosen to add rooms to: " + chosenHotel.getsHotelName() + "!");
@@ -268,14 +307,14 @@ public class HotelReservationSystem {
 		
 		System.out.println("\nReturning to Main Menu. Press Enter to Continue...");
 		sc.nextLine();
-		cls();
+		Driver.cls();
 	}
 	
 	/**
 	 * Removes rooms from the specified hotel.
 	 * @param chosenHotel - hotel to have rooms removed from.
 	 */
-	public static void RemoveRooms(Hotel chosenHotel) {
+	public void RemoveRooms(Hotel chosenHotel) {
 		Scanner sc = new Scanner(System.in);
 		
 		//TODO multiple rooms?
@@ -324,14 +363,14 @@ public class HotelReservationSystem {
 		System.out.println("\nReturning to Main Menu. Press Enter to Continue...");
 		sc.nextLine();
 		sc.nextLine();
-		cls();
+		Driver.cls();
 	}
 	
 	/**
 	 * Updates the base prices of rooms.
 	 * @param chosenHotel - hotel to have room base prices updated.
 	 */
-	public static void UpdateRoomBasePrices(Hotel chosenHotel) {
+	public void UpdateRoomBasePrices(Hotel chosenHotel) {
 		Scanner sc = new Scanner(System.in);
 		
 		System.out.println("\nYou have selected to update the base price of rooms in " + chosenHotel.getsHotelName());
@@ -347,27 +386,27 @@ public class HotelReservationSystem {
 		Boolean isBooked = chosenHotel.checkIfHotelIsBooked(date);
 		if (isBooked == true) {
 			System.out.println("\nApologies. You cannot change the base price of rooms today.");
-			System.out.printf("\nThe base price of %s's rooms is still: PHP%.2f!\n", chosenHotel.getsHotelName(), Room.dBasePricePerNight);
+			System.out.printf("\nThe base price of %s's rooms is still: PHP%.2f!\n", chosenHotel.getdBasePricePerNight());
 		} else {
 			System.out.println("\nSuccess! There are no hotel reservations today! You may change the base price of rooms.");
 			System.out.println("Please input a new base price: ");
 			double newPrice = sc.nextDouble();
 			
 			chosenHotel.UpdateBasePriceOfRooms(newPrice);
-			System.out.printf("\nSuccess! The new base price of %s's rooms is now: PHP%.2f!\n", chosenHotel.getsHotelName(), Room.dBasePricePerNight);
+			System.out.printf("\nSuccess! The new base price of %s's rooms is now: PHP%.2f!\n", chosenHotel.getsHotelName(), chosenHotel.getsHotelName(), chosenHotel.getdBasePricePerNight());
 		}
 			
 		System.out.println("\nReturning to Main Menu. Press Enter to Continue...");
 		sc.nextLine();
 		sc.nextLine();
-		cls();
+		Driver.cls();
 	}
 	
 	/**
 	 * Remove reservations from the hotel reservation system.
 	 * @param chosenHotel - removes reservations from the hotel as well.
 	 */
-	public static void RemoveReservation(Hotel chosenHotel) {
+	public void RemoveReservation(Hotel chosenHotel) {
 		Scanner sc = new Scanner(System.in);
 		
 		//TODO multiple reservations to remove?
@@ -411,14 +450,14 @@ public class HotelReservationSystem {
 		
 		System.out.println("\nReturning to Main Menu. Press Enter to Continue...");
 		sc.nextLine();
-		cls();
+		Driver.cls();
 	}
 	
 	/**
 	 * Removes hotels from the hotel reservation system.
 	 * @param chosenHotel - hotel to be removed.
 	 */
-	public static void RemoveHotel(Hotel chosenHotel) {
+	public void RemoveHotel(Hotel chosenHotel) {
 		//TODO remove multiple hotels?
 		Scanner sc = new Scanner(System.in);
 		System.out.println("\nYou have chosen to remove the " + chosenHotel.getsHotelName() + " hotel.");
@@ -441,13 +480,44 @@ public class HotelReservationSystem {
 		
 		System.out.println("\nReturning to Main Menu. Press Enter to Continue...");
 		sc.nextLine();
-		cls();
+		Driver.cls();
+	}
+
+	//todo
+	//public void DatePriceModifier(Hotel chosenHotel) {
+	public void DatePriceModifier(Hotel chosenHotel) {
+		Scanner sc = new Scanner(System.in);
+		String dateString = null;
+		Date modifyDate = new Date ();
+
+		System.out.println("\nYou have chosen to modify the prices of certain dates in " + chosenHotel.getsHotelName() + " hotel.");
+		System.out.println("Please input a date in dd-mm-yy format: ");
+
+		dateString = sc.nextLine();
+		Date date = new Date(dateString);
+		
+		Boolean isBooked = chosenHotel.checkIfHotelIsBooked(date);
+		if (isBooked == true) {
+			System.out.println("\nApologies. You cannot set a date price modifier on this day.");
+			System.out.printf("\nThe date price modifier on this day is still: PHP%.2f!\n", chosenHotel.getdatePriceModifierMultiplier()[date.dayInYear(date)]);
+		} else {
+			System.out.println("\nSuccess! There are no hotel reservations today! You may change the base price of rooms.");
+			System.out.println("Please input a new date price modifier: ");
+			
+			double newDatePriceModifier = sc.nextDouble();
+			chosenHotel.getdatePriceModifierMultiplier()[date.dayInYear(date)] = newDatePriceModifier;
+			System.out.printf("\nSuccess! The new date price modifier is now: PHP%.2f!\n", chosenHotel.getdatePriceModifierMultiplier()[date.dayInYear(date)]);
+		}
+
+		System.out.println("\nReturning to Main Menu. Press Enter to Continue...");
+		sc.nextLine();
+		Driver.cls();
 	}
 	
 	/**
 	 * Prompts the user for options to manage the hotels in the system.
 	 */
-	public static void ManageHotel() {
+	public void ManageHotel() {
 		Scanner sc = new Scanner(System.in);
 		String choice = "";
 		
@@ -462,7 +532,8 @@ public class HotelReservationSystem {
 			System.out.println("\t4. Update Base Price of Rooms");
 			System.out.println("\t5. Remove Reservation");
 			System.out.println("\t6. Remove Hotel");
-			System.out.println("\t7. Return to Main Menu");
+			System.out.println("\t7. Date Price Modifier");
+			System.out.println("\t8. Return to Main Menu");
 			choice = sc.nextLine();
 			
 			if (choice.equals("1")) {
@@ -478,34 +549,38 @@ public class HotelReservationSystem {
 			} else if (choice.equals("6")) {
 				RemoveHotel(hotel);
 			} else if (choice.equals("7")) {
+				DatePriceModifier(hotel);
+			} else if (choice.equals("8")) {
 				System.out.println("\nReturning to Main Menu. Press Enter to Continue...");
 				sc.nextLine();
-				cls();
+				Driver.cls();
 			} else {
 				System.out.println("uh oh! Please reinput your selection :((\n");
 			}
 			
-		} while (!(choice.equals("7")));
+		} while (!(choice.equals("8")));
 	}
 	
 	/**
 	 * Prompts the user with a series of instructions and questions to simulate the booking process.
 	 */
-	public static void SimulateBooking() {
+	public void SimulateBooking() {
 		Scanner sc = new Scanner(System.in);
 		
 		String guestName = null;
 		String date = null;
 		String YesOrNo = null;
+		String discountCode = null;
 		
 		Date CheckInDate = new Date ();
 		Date CheckOutDate = new Date ();
 		
 		int hotelChoice = 0;
+		int roomChoice = 0;
 		
 		
 		do {
-			cls();
+			Driver.cls();
 			System.out.println("Good day, user! Welcome to the hotel reservation system!\n");
 			System.out.println("My name is HRS! May I know yours?");
 			guestName = sc.nextLine();
@@ -588,93 +663,188 @@ public class HotelReservationSystem {
 			boolean status = i.checkIfRoomIsBooked(CheckInDate, CheckOutDate);
 			
 			if (status == false) {
-				System.out.printf("\t%d. Room %s\t%.2f", j, name, Room.dBasePricePerNight);
+				System.out.printf("\t%d. Room %s\t%.2f", j, name, hotelsInHRS.get(hotelChoice - 1).getdBasePricePerNight() * i.roomTypeMultiplier);
 //				System.out.println("\t" + j + ". Room " + name + "\t" + Room.dBasePricePerNight);
 				counter++;
 			}
 			j++;
 		}
+		System.out.println();
 		if (counter == 0) {				//if there are no more rooms available for the specified dates
 			System.out.println("\nApologies. There are no more rooms available to be booked...");
 			System.out.println("Please give the hotel a call regarding this concern or pick another check-in to check-out date. Thank you.");
 			sc.nextLine();
 		} else {
-			int roomChoice = sc.nextInt();
-		
-			System.out.println("\nYou have chosen to book: \tRoom " + hotelsInHRS.get(hotelChoice - 1).getHotelRooms().get(roomChoice - 1).getsRoomName() 
-					+ " in " + hotelsInHRS.get(hotelChoice - 1).getsHotelName());
-			
-			Reservation guestReservation = new Reservation(guestName, CheckInDate, CheckOutDate, hotelsInHRS.get(hotelChoice - 1).getHotelRooms().get(roomChoice - 1));
-			
-			reservationsInHRS.add(guestReservation);
-			hotelsInHRS.get(hotelChoice - 1).getHotelReservations().add(guestReservation);
-			
-			hotelsInHRS.get(hotelChoice - 1).getHotelRooms().get(roomChoice - 1).setDateRoomReserved(CheckInDate, CheckOutDate);
-			
-			System.out.println ("\n----------------------------------------------------------------------");
-			System.out.println("This booking was made by: \t" + guestReservation.getsGuestName());
-			System.out.println("You plan to stay from: \t\t" + guestReservation.getCheckInDate().printStringDate() 
-					+ " to " + guestReservation.getCheckOutDate().printStringDate());
-			System.out.println("Your total days of stay is: \t" + guestReservation.getnNumDaysOfStay(CheckInDate, CheckOutDate));
-			System.out.printf("\nAnd with a cost per night of: \tPHP%.2f", guestReservation.getdCostPerNight());
-			System.out.printf("\nYour total bill will be: \tPHP%.2f", guestReservation.getdTotalPriceOfBooking());
-			System.out.println ("\n----------------------------------------------------------------------");
-			
-			System.out.println("\nBy typing 'confirm' you are confirming the details of your reservation \n\tand will be redirected to the payments page.");
-			sc.nextLine();
-			sc.nextLine();
-			
-			System.out.println ("\n----------------------------------------------------------------------");
-			System.out.println("Your reservation number is: \t" + guestReservation.getReservationNumber());
-			
-			Room guestRoom = hotelsInHRS.get(hotelChoice - 1).findRoomWithRoomID(guestReservation.getRoomID());
-			
-			System.out.println("Your room will be at: \t\tRoom " + guestRoom.getsRoomName() + " at " + hotelsInHRS.get(hotelChoice - 1).getsHotelName());
-			System.out.println ("----------------------------------------------------------------------");
-			
-			System.out.println("\n\nRedirecting to payments page...");
-			sc.nextLine();
-			System.out.println("\nReturning to Main Menu...");
-			sc.nextLine();
-			cls();
-		}
+			do {
+				roomChoice = sc.nextInt();
+				if (roomChoice > counter) {
+					System.out.println("\nApologies. You have selected an invalid room. Please try again.");
+				} else {
+					System.out.println("\nYou have chosen to book: \tRoom " + hotelsInHRS.get(hotelChoice - 1).getHotelRooms().get(roomChoice - 1).getsRoomName() 
+						+ " in " + hotelsInHRS.get(hotelChoice - 1).getsHotelName());
+				
+					Reservation guestReservation = new Reservation(guestName, CheckInDate, CheckOutDate, hotelsInHRS.get(hotelChoice - 1).getHotelRooms().get(roomChoice - 1), hotelsInHRS.get(hotelChoice - 1).getdBasePricePerNight(), hotelsInHRS.get(hotelChoice - 1).getdatePriceModifierMultiplier(), hotelsInHRS.get(hotelChoice - 1).getHotelRooms().get(roomChoice - 1).getfRroomTypeMultiplier());
+
+
+					reservationsInHRS.add(guestReservation);
+					hotelsInHRS.get(hotelChoice - 1).getHotelReservations().add(guestReservation);
+					
+					hotelsInHRS.get(hotelChoice - 1).getHotelRooms().get(roomChoice - 1).setDateRoomReserved(CheckInDate, CheckOutDate);
+					
+					System.out.println ("\n----------------------------------------------------------------------");
+					System.out.println("This booking was made by: \t" + guestReservation.getsGuestName());
+					System.out.println("You plan to stay from: \t\t" + guestReservation.getCheckInDate().printStringDate() 
+							+ " to " + guestReservation.getCheckOutDate().printStringDate());
+					System.out.println("Your total days of stay is: \t" + guestReservation.getnNumDaysOfStay(CheckInDate, CheckOutDate));
+					System.out.printf("\nYour total bill will be: \tPHP%.2f", guestReservation.getdTotalPriceOfBooking());
+					System.out.println ("\n----------------------------------------------------------------------");
+					
+					System.out.println();
+					System.out.println ("\n----------------------------------------------------------------------");
+					System.out.println("Do you have any discount codes?");
+					YesOrNo = null;
+					sc.nextLine();
+					YesOrNo = sc.nextLine();
+					
+					if (YesOrNo.toLowerCase().equals("yes") || YesOrNo.toLowerCase().equals("y")) {
+						System.out.println("Please input your discount code: ");
+						discountCode = sc.nextLine();
+	
+						if (discountCode.equals("I_WORK_HERE")){
+							System.out.println("Success! Your discount code worked!");
+							System.out.println("You have claimed a 10% discount! Your bill is reduced by: PHP" + guestReservation.getdTotalPriceOfBooking() * 0.10 + "!");
+							guestReservation.setdTotalPriceOfBooking(guestReservation.getdTotalPriceOfBooking() * (1 - 0.10));
+								
+							System.out.println ("\n\n----------------------------------------------------------------------");
+							System.out.println("This booking was made by: \t" + guestReservation.getsGuestName());
+							System.out.println("You plan to stay from: \t\t" + guestReservation.getCheckInDate().printStringDate() 
+										+ " to " + guestReservation.getCheckOutDate().printStringDate());
+							System.out.println("Your total days of stay is: \t" + guestReservation.getnNumDaysOfStay(CheckInDate, CheckOutDate));
+							System.out.printf("\nYour total bill will be: \tPHP%.2f", guestReservation.getdTotalPriceOfBooking());
+							System.out.println ("\n----------------------------------------------------------------------");
+						} else if (discountCode.equals("STAY4_GET1")){
+							if (guestReservation.getnNumDaysOfStay(CheckInDate, CheckOutDate) >= 5) {
+								System.out.println("Success! Your discount code worked!");
+								System.out.println("The first day of your stay at the hotel is free!!");
+								System.out.println("Your bill has been reduced by: PHP" + guestReservation.costOnCertainDay(CheckInDate.dayInYear(CheckInDate)) + "!");
+								guestReservation.setdTotalPriceOfBooking(guestReservation.getdTotalPriceOfBooking() - guestReservation.costOnCertainDay(CheckInDate.dayInYear(CheckInDate)));
+	
+								System.out.println ("\n\n----------------------------------------------------------------------");
+								System.out.println("This booking was made by: \t" + guestReservation.getsGuestName());
+								System.out.println("You plan to stay from: \t\t" + guestReservation.getCheckInDate().printStringDate() 
+										+ " to " + guestReservation.getCheckOutDate().printStringDate());
+								System.out.println("Your total days of stay is: \t" + guestReservation.getnNumDaysOfStay(CheckInDate, CheckOutDate));
+								System.out.printf("\nYour total bill will be: \tPHP%.2f", guestReservation.getdTotalPriceOfBooking());
+								System.out.println ("\n----------------------------------------------------------------------");
+							} else {
+								System.out.println("Apologies! Your reservation does not qualify you for the discount as you have booked a " + guestReservation.getnNumDaysOfStay(CheckInDate, CheckOutDate) + " day stay only.");
+								System.out.println("For this coupon to work, you must have booked at least 5 days at the hotel.");
+							}
+						} else if (discountCode.equals("PAYDAY")){
+							if (guestReservation.getCheckInDate().getnDay() == 15 || 
+								guestReservation.getCheckInDate().getnDay() == 30 ||
+								guestReservation.checkIfRoomIsBooked(15) || 		//jan 15		sir sorry for this lazy implementation 
+								guestReservation.checkIfRoomIsBooked(30) || 		//jan 30			HAHAHAH
+								guestReservation.checkIfRoomIsBooked(46) || 		//feb 15			im so burntout
+								guestReservation.checkIfRoomIsBooked(75) || 		//mar 15
+								guestReservation.checkIfRoomIsBooked(90) || 
+								guestReservation.checkIfRoomIsBooked(106) || 
+								guestReservation.checkIfRoomIsBooked(121) || 
+								guestReservation.checkIfRoomIsBooked(136) || 
+								guestReservation.checkIfRoomIsBooked(151) || 
+								guestReservation.checkIfRoomIsBooked(167) || 
+								guestReservation.checkIfRoomIsBooked(182) || 
+								guestReservation.checkIfRoomIsBooked(197) || 
+								guestReservation.checkIfRoomIsBooked(212) || 
+								guestReservation.checkIfRoomIsBooked(228) || 
+								guestReservation.checkIfRoomIsBooked(243) || 
+								guestReservation.checkIfRoomIsBooked(259) || 
+								guestReservation.checkIfRoomIsBooked(274) || 
+								guestReservation.checkIfRoomIsBooked(289) || 
+								guestReservation.checkIfRoomIsBooked(304) || 
+								guestReservation.checkIfRoomIsBooked(320) || 
+								guestReservation.checkIfRoomIsBooked(335) || 		//nov 30
+								guestReservation.checkIfRoomIsBooked(350) || 		//dec 15
+								guestReservation.checkIfRoomIsBooked(365)) {		//dec 30
+								if (guestReservation.getCheckOutDate().getnDay() == 15 ||
+									guestReservation.getCheckOutDate().getnDay() == 30){
+									System.out.println("Apologies! Your reservation does not qualify you for the discount.");
+								} else {
+									System.out.println("Success! Your discount code worked!");
+									System.out.println("You have claimed a 7% discount! Your bill is reduced by: PHP" + guestReservation.getdTotalPriceOfBooking() * 0.07 + "!");
+									guestReservation.setdTotalPriceOfBooking(guestReservation.getdTotalPriceOfBooking() * (1 - 0.07));
+	
+									System.out.println ("\n\n----------------------------------------------------------------------");
+									System.out.println("This booking was made by: \t" + guestReservation.getsGuestName());
+									System.out.println("You plan to stay from: \t\t" + guestReservation.getCheckInDate().printStringDate() 
+											+ " to " + guestReservation.getCheckOutDate().printStringDate());
+									System.out.println("Your total days of stay is: \t" + guestReservation.getnNumDaysOfStay(CheckInDate, CheckOutDate));
+									System.out.printf("\nYour total bill will be: \tPHP%.2f", guestReservation.getdTotalPriceOfBooking());
+									System.out.println ("\n----------------------------------------------------------------------");
+								}
+							} else {
+								System.out.println("Apologies! Your reservation does not qualify you for the discount.");
+							}
+						} else {
+							System.out.println("Apologies. This discount code does not exist.");
+						}
+					}
+					
+					System.out.println ("\n----------------------------------------------------------------------");
+					System.out.println("\nBy typing 'confirm' you are confirming the details of your reservation \n\tand will be redirected to the payments page.");
+					sc.nextLine();
+					sc.nextLine();
+					
+					System.out.println ("\n----------------------------------------------------------------------");
+					System.out.println("Your reservation number is: \t" + guestReservation.getReservationNumber());
+					
+					Room guestRoom = hotelsInHRS.get(hotelChoice - 1).findRoomWithRoomID(guestReservation.getRoomID());
+					
+					System.out.println("Your room will be at: \t\tRoom " + guestRoom.getsRoomName() + " at " + hotelsInHRS.get(hotelChoice - 1).getsHotelName());
+					System.out.println ("----------------------------------------------------------------------");
+					
+					System.out.println("\n\nRedirecting to payments page...");
+					sc.nextLine();
+					System.out.println("\nReturning to Main Menu...");
+					sc.nextLine();
+					Driver.cls();
+				}
+			} while (!(roomChoice < counter));
+		} 
 	}
 
-	/**
-	 * Main method that runs all other classes and methods.
-	 * @param args - string array
-	 */
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);  // Create a Scanner object
-		String choice = "";
+	public Boolean SimulateBooking(Boolean GUI, String guestName, int hotelChoice, int roomChoice, String date1, String date2, String discountCode, double totalCost) {
+		System.out.printf("\nHello, %s!\n", guestName);
+		Date CheckInDate = new Date ();
+		Date CheckOutDate = new Date ();
+		String[] dateParts = date1.split("-");
+		int nDay = Integer.parseInt(dateParts[0]);
+		CheckInDate.setnDay(nDay);
+		int nMonth = Integer.parseInt(dateParts[1]);
+		CheckInDate.setnMonth(nMonth);
+		int nYear = Integer.parseInt(dateParts[2]);
+		CheckInDate.setnYear(nYear);
+		dateParts = date2.split("-");
+		nDay = Integer.parseInt(dateParts[0]);
+		CheckOutDate.setnDay(nDay);
+		nMonth = Integer.parseInt(dateParts[1]);
+		CheckOutDate.setnMonth(nMonth);
+		nYear = Integer.parseInt(dateParts[2]);
+		CheckOutDate.setnYear(nYear);
 		
-		do {
-//			sc.nextLine();
-			cls();
-			System.out.println("HOTEL RESERVATION SYSTEM\n");
-			System.out.println("What do you want to do?");
-			System.out.println("\t1. Create Hotel");
-			System.out.println("\t2. View Hotel");
-			System.out.println("\t3. Manage Hotel");
-			System.out.println("\t4. Simulate Booking");
-			System.out.println("\t5. Quit Program");
-			
+		Reservation guestReservation = new Reservation(guestName, CheckInDate, CheckOutDate, hotelsInHRS.get(hotelChoice).getHotelRooms().get(roomChoice), hotelsInHRS.get(hotelChoice).getdBasePricePerNight(), hotelsInHRS.get(hotelChoice).getdatePriceModifierMultiplier(), hotelsInHRS.get(hotelChoice).getHotelRooms().get(roomChoice).getfRroomTypeMultiplier(), totalCost);
 
-			choice = sc.nextLine();
-			if (choice.equals("1")) {
-				CreateHotel();
-			} else if (choice.equals("2")) {
-				ViewHotel();
-			} else if (choice.equals("3")) {
-				ManageHotel();
-			} else if (choice.equals("4")) {
-				SimulateBooking();
-			} else if (choice.equals("5")) {
-				cls();
-				System.out.println("Thank you for using this HOTEL RESERVATION SYSTEM!");
-			} else {
-				System.out.println("uh oh! Please reinput your selection :((\n");
-			}
-		} while (!(choice.equals("5")));
+		reservationsInHRS.add(guestReservation);
+		hotelsInHRS.get(hotelChoice).getHotelReservations().add(guestReservation);
+		hotelsInHRS.get(hotelChoice).getHotelRooms().get(roomChoice).setDateRoomReserved(CheckInDate, CheckOutDate);
+		System.out.printf("\nGoodbye, %s!\n", guestName);
+		return true;
+	}
+					
+		 
+	
+
+	public ArrayList<Hotel> getHotelsInHRS() {
+		return hotelsInHRS;
 	}
 }
