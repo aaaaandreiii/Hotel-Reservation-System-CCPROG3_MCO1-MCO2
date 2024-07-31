@@ -29,7 +29,7 @@ public class MainMenuGUI extends JPanel {
 
     private static Color beige = new Color(254, 243, 226);
     private static Color paleGreen1 = new Color(112, 136, 113);
-    private static ImageIcon fullLogoImageIcon = new ImageIcon("./src/photos/OpulenceOasisFullLogo.png");
+    private static ImageIcon fullLogoImageIcon = new ImageIcon("./photos/OpulenceOasisFullLogo.png");
     public MainMenuGUI() {
         parentPanel = new JPanel();
 
@@ -52,7 +52,7 @@ public class MainMenuGUI extends JPanel {
         logoButton.setBackground(null);
         logoButton.setBorder(null);
         try {
-			File fontStyle = new File("./src/fonts/NotoSerifEthiopic_Condensed-Regular.ttf");
+			File fontStyle = new File("./fonts/NotoSerifEthiopic_Condensed-Regular.ttf");
 			Font font = Font.createFont(Font.TRUETYPE_FONT, fontStyle).deriveFont(90f);
 			title.setFont(font);
             title.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -73,7 +73,7 @@ public class MainMenuGUI extends JPanel {
         panelSelection.setBackground(paleGreen1);
         panelSelection.setLayout(new GridLayout(4, 1));
         try {
-			File fontStyle = new File("./src/fonts/NotoSerifEthiopic_ExtraCondensed-Regular.ttf");
+			File fontStyle = new File("./fonts/NotoSerifEthiopic_ExtraCondensed-Regular.ttf");
 			Font font = Font.createFont(Font.TRUETYPE_FONT, fontStyle).deriveFont(30f);
             CreateHotel.setFont(font);
             ViewHotel.setFont(font);

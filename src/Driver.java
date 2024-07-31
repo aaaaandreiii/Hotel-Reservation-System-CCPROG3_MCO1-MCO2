@@ -19,7 +19,7 @@ public class Driver {
 		
 		do {
 			System.out.println("Do you want to open the GUI? (yes/no)");
-			choice = sc.next(); //choice = "no";// 
+			choice = "yes";// choice = sc.next(); //choice = "no";// 
 			
 			if (choice.toLowerCase().equals("yes") || choice.toLowerCase().equals("y")) {
 				//instantiate attributes needed by attributes of MVC

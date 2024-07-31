@@ -36,7 +36,7 @@ public class CreateHotelGUI extends JPanel {
     private static Color beige = new Color(254, 243, 226);
     private static Color darkBlue1 = new Color(96, 102, 118);
     private static Color paleGreen1 = new Color(112, 136, 113);
-    private static ImageIcon fullLogoImageIcon = new ImageIcon("./src/photos/OpulenceOasisFullLogo.png");
+    private static ImageIcon fullLogoImageIcon = new ImageIcon("./photos/OpulenceOasisFullLogo.png");
 
     public CreateHotelGUI() {
         parentPanel = new JPanel();
@@ -61,7 +61,7 @@ public class CreateHotelGUI extends JPanel {
         logoButton.setBackground(null);
         logoButton.setBorder(null);
         try {
-			File fontStyle = new File("./src/fonts/NotoSerifEthiopic_Condensed-Regular.ttf");
+			File fontStyle = new File("./fonts/NotoSerifEthiopic_Condensed-Regular.ttf");
 			Font font = Font.createFont(Font.TRUETYPE_FONT, fontStyle).deriveFont(90f);
 			title.setFont(font);
             title.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -88,7 +88,7 @@ public class CreateHotelGUI extends JPanel {
         panelFooter.setBackground(paleGreen1);
         panelFooter.setLayout(new GridLayout(4, 1));
         try {
-			File fontStyle = new File("./src/fonts/NotoSerifEthiopic_ExtraCondensed-Regular.ttf");
+			File fontStyle = new File("./fonts/NotoSerifEthiopic_ExtraCondensed-Regular.ttf");
 			Font font = Font.createFont(Font.TRUETYPE_FONT, fontStyle).deriveFont(25f);
             newHotelLabel.setFont(font);
 		} catch (Exception e) {
@@ -96,7 +96,7 @@ public class CreateHotelGUI extends JPanel {
 			Font font = new Font("Serif", Font.PLAIN, 25);
             newHotelLabel.setFont(font);
         } try {
-			File fontStyle = new File("./src/fonts/NotoSerifEthiopic_ExtraCondensed-Regular.ttf");
+			File fontStyle = new File("./fonts/NotoSerifEthiopic_ExtraCondensed-Regular.ttf");
 			Font font = Font.createFont(Font.TRUETYPE_FONT, fontStyle).deriveFont(30f);
             submitButton.setFont(font);
             creationFeedback.setFont(font);
@@ -108,7 +108,7 @@ public class CreateHotelGUI extends JPanel {
             creationFeedback.setFont(font);
             MainMenuButton.setFont(font);
         } try {
-			File fontStyle = new File("./src/fonts/NotoSerif-ThinItalic.ttf");
+			File fontStyle = new File("./fonts/NotoSerif-ThinItalic.ttf");
 			Font font = Font.createFont(Font.TRUETYPE_FONT, fontStyle).deriveFont(30f);
             newHotelTextField.setFont(font);
 		} catch (Exception e) {

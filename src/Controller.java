@@ -249,7 +249,7 @@ public class Controller {
             @Override
 			public void actionPerformed(ActionEvent ae) {
                 try {
-                    File fontStyle = new File("./src/fonts/NotoSerif-ThinItalic.ttf");
+                    File fontStyle = new File("./fonts/NotoSerif-ThinItalic.ttf");
                     Font font = Font.createFont(Font.TRUETYPE_FONT, fontStyle).deriveFont(25f);
                     viewClass.getCreateHotel().getnewHotelTextField().setFont(font);
                 } catch (Exception e) {
@@ -343,7 +343,7 @@ public class Controller {
                 textPane.setContentType("text/html");
                 textPane.setEditable(false);
                 try {
-                    File fontStyle = new File("./src/fonts/NotoSerifEthiopic_Condensed-Regular.ttf");
+                    File fontStyle = new File("./fonts/NotoSerifEthiopic_Condensed-Regular.ttf");
                     Font font = Font.createFont(Font.TRUETYPE_FONT, fontStyle).deriveFont(20f);
                     textPane.setFont(font);
                 } catch (Exception e) {

@@ -47,9 +47,9 @@ public class SimulateBookingGUIPage2 extends JPanel {
     private static Color beige = new Color(254, 243, 226);
     private static Color darkBlue1 = new Color(96, 102, 118);
     private static Color paleGreen1 = new Color(112, 136, 113);
-    private static ImageIcon fullLogoImageIconGreen = new ImageIcon("./src/photos/OpulenceOasisFullLogoGreen.png");
-    private static ImageIcon hotelIcon = new ImageIcon("./src/photos/hotel_icon.png");
-    private static ImageIcon calendarIcon = new ImageIcon("./src/photos/calendar_icon.png");
+    private static ImageIcon fullLogoImageIconGreen = new ImageIcon("./photos/OpulenceOasisFullLogoGreen.png");
+    private static ImageIcon hotelIcon = new ImageIcon("./photos/hotel_icon.png");
+    private static ImageIcon calendarIcon = new ImageIcon("./photos/calendar_icon.png");
     
     public SimulateBookingGUIPage2() {
         parentPanel = new JPanel();
@@ -103,7 +103,7 @@ public class SimulateBookingGUIPage2 extends JPanel {
         nextButton.setPreferredSize(new Dimension(95, 95));
 
         try {
-			File fontStyle = new File("./src/fonts/NotoSerifEthiopic_Condensed-Regular.ttf");
+			File fontStyle = new File("./fonts/NotoSerifEthiopic_Condensed-Regular.ttf");
 			Font font = Font.createFont(Font.TRUETYPE_FONT, fontStyle).deriveFont(18f);
             hotelList.setFont(font);
 		} catch (Exception e) {
@@ -112,7 +112,7 @@ public class SimulateBookingGUIPage2 extends JPanel {
             hotelList.setFont(font);
         }
         try {
-			File fontStyle = new File("./src/fonts/NotoSerifEthiopic_Condensed-Regular.ttf");
+			File fontStyle = new File("./fonts/NotoSerifEthiopic_Condensed-Regular.ttf");
 			Font font = Font.createFont(Font.TRUETYPE_FONT, fontStyle).deriveFont(22f);
 			checkInField.setFont(font);
             checkOutField.setFont(font);
@@ -135,7 +135,7 @@ public class SimulateBookingGUIPage2 extends JPanel {
         labelCheckOut.setForeground(beige);
 
         try {
-			File fontStyle = new File("./src/fonts/NotoSerifEthiopic_ExtraCondensed-Bold.ttf");
+			File fontStyle = new File("./fonts/NotoSerifEthiopic_ExtraCondensed-Bold.ttf");
 			Font font = Font.createFont(Font.TRUETYPE_FONT, fontStyle).deriveFont(15f);
             labelHotel.setForeground(beige);
             labelHotel.setFont(font);
@@ -198,7 +198,7 @@ public class SimulateBookingGUIPage2 extends JPanel {
         availableRoomsComboBox.setBorder(null);
 
         try {
-			File fontStyle = new File("./src/fonts/NotoSerifEthiopic_ExtraCondensed-Medium.ttf");
+			File fontStyle = new File("./fonts/NotoSerifEthiopic_ExtraCondensed-Medium.ttf");
 			Font font = Font.createFont(Font.TRUETYPE_FONT, fontStyle).deriveFont(25f);
             guestNameLabel.setFont(font);
             typeOfRoomLabel.setFont(font);
@@ -208,7 +208,7 @@ public class SimulateBookingGUIPage2 extends JPanel {
             guestNameLabel.setFont(font);
             typeOfRoomLabel.setFont(font);
         } try {
-			File fontStyle = new File("./src/fonts/NotoSerifEthiopic_ExtraCondensed-Medium.ttf");
+			File fontStyle = new File("./fonts/NotoSerifEthiopic_ExtraCondensed-Medium.ttf");
 			Font font = Font.createFont(Font.TRUETYPE_FONT, fontStyle).deriveFont(35f);
             guestNameTextField.setForeground(beige);
             availableRoomsComboBox.setForeground(beige);
@@ -245,7 +245,7 @@ public class SimulateBookingGUIPage2 extends JPanel {
         title.setHorizontalAlignment(SwingConstants.RIGHT);
         title.setForeground(beige);
         try {
-			File fontStyle = new File("./src/fonts/NotoSerifEthiopic_Condensed-Regular.ttf");
+			File fontStyle = new File("./fonts/NotoSerifEthiopic_Condensed-Regular.ttf");
 			Font font = Font.createFont(Font.TRUETYPE_FONT, fontStyle).deriveFont(85f);
 			title.setFont(font);
 		} catch (Exception e) {
